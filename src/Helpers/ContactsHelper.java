@@ -18,4 +18,18 @@ public class ContactsHelper {
 		}
 		return contacts;
 	}
+	
+    public void sortContacts(Comparator<Contact> comparator, DefaultListModel listModel) {
+        Contact[] contacts = new Contact[listModel.getSize()];
+        listModel.copyInto(contacts);
+        
+        // Sort the array
+        Arrays.sort(contacts, comparator);
+        
+        // Update the listModel
+        listModel.clear();
+        for (Contact contact : contacts) {
+            listModel.addElement(contact);
+        }
+    }
 }

@@ -6,7 +6,7 @@ import java.util.*;
 public class Groupe implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private String nom, description;
-	private static List<Contact> contacts;
+	private static Set<Contact> contacts;
 
 	public Groupe(String nom, String description){
 		this.nom = nom;

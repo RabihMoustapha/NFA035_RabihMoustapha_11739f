@@ -9,11 +9,14 @@ import Helpers.ContactsHelper;
 import Models.Contact;
 
 public class ContactsFrame extends JFrame {
-	public ContactsFrame() {
-		initialiseUI();
+	Contact c;
+	
+	public ContactsFrame(Contact c) {
+		initialiseUI(c);
 	}
 
-	private void initialiseUI() {
+	private void initialiseUI(Contact contact) {
+		contact = c;
 		setTitle("Liste des Contacts");
 		setSize(900, 550);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -96,7 +99,7 @@ public class ContactsFrame extends JFrame {
 		setContentPane(mainPanel);
 		setVisible(true);
 
-		ContactController contactCtrl = new ContactController(listModel, contactList);
+		ContactController contactCtrl = new ContactController(listModel, contactList, contact);
 		sortByFirstName.addActionListener(contactCtrl.getSortByFirstNameListener());
 		sortByLastName.addActionListener(contactCtrl.getSortByLastNameListener());
 		sortByCity.addActionListener(contactCtrl.getSortByCityListener());

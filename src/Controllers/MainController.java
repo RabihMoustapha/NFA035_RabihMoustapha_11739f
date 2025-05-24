@@ -17,6 +17,7 @@ import Views.GroupsFrame;
 
 public class MainController {
 	private MainFrame view;
+	private Contact c;
 
 	public MainController(MainFrame view) {
 		this.view = view;
@@ -38,7 +39,7 @@ public class MainController {
 	}
 
 	private void openContactsWindow() {
-		ContactsFrame contacts = new ContactsFrame();
+		ContactsFrame contacts = new ContactsFrame(c);
 		AddContactsFrame addContacts = new AddContactsFrame();
 	}
 
