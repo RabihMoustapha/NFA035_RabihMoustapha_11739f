@@ -20,6 +20,8 @@ public class AddContactsFrame extends JFrame {
 	}
 
 	private void initializeUI() {
+
+		// Design
 		setTitle("Gestion des contacts - Nouveau Contact");
 		setSize(500, 450);
 		setLocationRelativeTo(null);
@@ -69,9 +71,9 @@ public class AddContactsFrame extends JFrame {
 		Set<Groupe> groups = new HashSet<>();
 		GroupsHelper helper = new GroupsHelper();
 		JCheckBox[] groupBoxes;
-		
+
 		groups = helper.loadGroupsFromFile();
-		
+
 		groupBoxes = new JCheckBox[groups.size()];
 
 		int i = 0;
@@ -87,6 +89,7 @@ public class AddContactsFrame extends JFrame {
 		JButton saveButton = new JButton("Enregistrer");
 		JButton cancelButton = new JButton("Annuler");
 
+		// Add the listener
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {

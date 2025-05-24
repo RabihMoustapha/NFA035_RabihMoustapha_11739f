@@ -2,8 +2,7 @@ package Controllers;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.table.*;
 import Helpers.ContactsHelper;
@@ -12,6 +11,7 @@ import Models.Contact;
 import Models.Groupe;
 import Views.AddContactsFrame;
 import Views.ContactsFrame;
+import Views.UpdateContactsFrame;
 import Views.MainFrame;
 import Views.GroupsFrame;
 
@@ -41,6 +41,7 @@ public class MainController {
 	private void openContactsWindow() {
 		ContactsFrame contacts = new ContactsFrame(c);
 		AddContactsFrame addContacts = new AddContactsFrame();
+		UpdateContactsFrame updateContacts = new UpdateContactsFrame();
 	}
 
 	private void openGroupsWindow() {

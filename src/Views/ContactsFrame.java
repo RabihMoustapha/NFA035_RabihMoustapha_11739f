@@ -2,7 +2,6 @@ package Views;
 
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 import javax.swing.*;
 import Controllers.ContactController;
 import Helpers.ContactsHelper;
@@ -71,11 +70,7 @@ public class ContactsFrame extends JFrame {
 		ContactsHelper helper = new ContactsHelper();
 		Set<Contact> contacts = new HashSet<>();
 
-		contacts = helper.readData();
-
-		for (Contact c : contacts) {
-			listModel.addElement(c);
-		}
+		contacts = helper.readData(listModel);
 
 		JList<Contact> contactList = new JList<>(listModel);
 		contactList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
