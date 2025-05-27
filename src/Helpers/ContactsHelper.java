@@ -10,8 +10,8 @@ public class ContactsHelper {
 		Set<Contact> contacts = new HashSet<>();
 		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))) {
 			// Read object from file
-			Object obj = ois.readObject();
-			contacts.addAll((Collection<? extends Contact>) obj);
+			Contact obj = (Contact)ois.readObject();
+			contacts.add(obj);
 
 			// Refresh page with this function
 			addDataToList(contacts, listModel);

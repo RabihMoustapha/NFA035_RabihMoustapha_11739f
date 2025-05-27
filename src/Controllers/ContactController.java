@@ -53,25 +53,23 @@ public class ContactController {
 
 	public ActionListener getUpdateListener() {
 		return e -> {
-//				int index = contactList.getSelectedIndex();
-//				if (index >= 0) {
-//					Contact selected = listModel.getElementAt(index);
-//
-//					String newPrenom = JOptionPane.showInputDialog(null, "Nouveau prénom :", selected.getPrenom());
-//					String newNom = JOptionPane.showInputDialog(null, "Nouveau nom :", selected.getNom());
-//					String newVille = JOptionPane.showInputDialog(null, "Nouvelle ville :", selected.getVille());
-//
-//					if (newPrenom != null && newNom != null && newVille != null && !newPrenom.trim().isEmpty()
-//							&& !newNom.trim().isEmpty() && !newVille.trim().isEmpty()) {
-//
-//						Contact updated = new Contact(newPrenom.trim(), newNom.trim(), newVille.trim());
-//						listModel.set(index, updated);
-//					}
-//				} else {
-//					showSelectionWarning();
-//				}
-			int index = contactList.getSelectedIndex();
-//			new UpdateContactsFrame(index, listModel);
+				int index = contactList.getSelectedIndex();
+				if (index >= 0) {
+					Contact selected = listModel.getElementAt(index);
+
+					String newPrenom = JOptionPane.showInputDialog(null, "Nouveau prénom :", selected.getPrenom());
+					String newNom = JOptionPane.showInputDialog(null, "Nouveau nom :", selected.getNom());
+					String newVille = JOptionPane.showInputDialog(null, "Nouvelle ville :", selected.getVille());
+
+					if (newPrenom != null && newNom != null && newVille != null && !newPrenom.trim().isEmpty()
+							&& !newNom.trim().isEmpty() && !newVille.trim().isEmpty()) {
+
+						Contact updated = new Contact(newPrenom.trim(), newNom.trim(), newVille.trim());
+						listModel.set(index, updated);
+					}
+				} else {
+					showSelectionWarning();
+				}
 		};
 	}
 

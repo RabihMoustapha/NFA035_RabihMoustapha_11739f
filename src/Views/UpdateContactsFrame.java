@@ -41,32 +41,18 @@ public class UpdateContactsFrame extends JFrame {
 
         JPanel namePanel = new JPanel(new GridLayout(2, 2, 10, 5));
         namePanel.setBorder(BorderFactory.createTitledBorder("Nom du contact"));
-
-//        JTextField firstNameField = new JTextField(contact.getFirstName());
-//        JTextField lastNameField = new JTextField(contact.getLastName());
+        
         namePanel.add(new JLabel("Prénom :"));
-//        namePanel.add(firstNameField);
         namePanel.add(new JLabel("Nom :"));
-//        namePanel.add(lastNameField);
         mainPanel.add(namePanel);
         mainPanel.add(Box.createVerticalStrut(10));
 
         JPanel infoPanel = new JPanel(new GridLayout(3, 2, 10, 5));
         infoPanel.setBorder(BorderFactory.createTitledBorder("Informations de contact"));
-
-//        JTextField cityField = new JTextField(contact.getCity());
-        
-        // Get the first phone number (assuming at least one exists)
-//        PhoneNumber firstNumber = contact.getPhoneNumbers().iterator().next();
-//        JTextField regionCodeField = new JTextField(String.valueOf(firstNumber.getRegionCode()));
-//        JTextField phoneNumberField = new JTextField(String.valueOf(firstNumber.getNumber()));
         
         infoPanel.add(new JLabel("Ville :"));
-//        infoPanel.add(cityField);
         infoPanel.add(new JLabel("Code Région :"));
-//        infoPanel.add(regionCodeField);
         infoPanel.add(new JLabel("Téléphone :"));
-//        infoPanel.add(phoneNumberField);
         mainPanel.add(infoPanel);
         mainPanel.add(Box.createVerticalStrut(10));
 
@@ -84,10 +70,6 @@ public class UpdateContactsFrame extends JFrame {
         int i = 0;
         for (Groupe group : groups) {
             groupBoxes[i] = new JCheckBox(group.getNom());
-            // Check if the contact belongs to this group
-//            if (contact.getGroups().contains(group.getNom())) {
-//                groupBoxes[i].setSelected(true);
-//            }
             groupPanel.add(groupBoxes[i]);
             i++;
         }
@@ -102,24 +84,7 @@ public class UpdateContactsFrame extends JFrame {
         updateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-//                    String firstName = firstNameField.getText().trim();
-//                    String lastName = lastNameField.getText().trim();
-//                    String city = cityField.getText().trim();
-//                    int regionCode = Integer.parseInt(regionCodeField.getText().trim());
-//                    int phoneNumber = Integer.parseInt(phoneNumberField.getText().trim());
-                    
-//                    if (firstName.isEmpty() || lastName.isEmpty() || city.isEmpty()) {
-//                        throw new IllegalArgumentException("Tous les champs doivent être remplis.");
-//                    }
-                    
-                    // Update the contact
-//                    contact.setFirstName(firstName);
-//                    contact.setLastName(lastName);
-//                    contact.setCity(city);
-                    
-                    // Update phone numbers (simplified - assumes single number)
                     contact.getPhoneNumbers().clear();
-//                    contact.addPhoneNumber(new PhoneNumber(regionCode, phoneNumber));
                     
                     // Update groups
                     Set<String> selectedGroups = new HashSet<>();
@@ -128,13 +93,8 @@ public class UpdateContactsFrame extends JFrame {
                             selectedGroups.add(box.getText());
                         }
                     }
-//                    contact.setGroups(selectedGroups);
-                    
-                    // Here you would typically update the contact in your data storage
-                    // For example, load all contacts, find and update this one, then save back
                     
                     JOptionPane.showMessageDialog(null, "Contact mis à jour avec succès !");
-                    dispose(); // Close the update window
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null, "Le code région et le numéro doivent être des entiers.");
                 } catch (IllegalArgumentException ex) {
