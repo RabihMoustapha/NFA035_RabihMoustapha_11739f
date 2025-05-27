@@ -17,11 +17,11 @@ public class UpdateContactsFrame extends JFrame {
     private int index; 
     private DefaultListModel listModel;
 
-    public UpdateContactsFrame(Contact contact) {
-        initializeUI(contact, index, listModel);
+    public UpdateContactsFrame(Contact c) {
+        initializeUI(c, index, listModel);
     }
 
-    private void initializeUI(Contact contact, int index, DefaultListModel listModel) {
+	private void initializeUI(Contact contact, int index, DefaultListModel listModel) {
         // Design
         setTitle("Gestion des contacts - Modifier Contact");
         setSize(500, 450);

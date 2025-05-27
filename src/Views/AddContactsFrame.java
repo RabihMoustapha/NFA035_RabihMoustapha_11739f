@@ -14,8 +14,10 @@ public class AddContactsFrame extends JFrame {
 	private JButton addContactButton;
 	private JButton backButton;
 	private JTable contactsTable;
+	private Set<Contact> contacts;
 
 	public AddContactsFrame() {
+		contacts = new HashSet();
 		initializeUI();
 	}
 

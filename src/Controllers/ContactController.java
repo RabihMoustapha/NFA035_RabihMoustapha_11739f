@@ -15,11 +15,13 @@ public class ContactController {
 	private JList<Contact> contactList;
 	private Contact c;
 	private ContactsHelper helper = new ContactsHelper();
+	private Set<Contact> contacts;
 
 	public ContactController(DefaultListModel<Contact> listModel, JList<Contact> contactList, Contact c) {
 		this.listModel = listModel;
 		this.contactList = contactList;
 		this.c = c;
+		contacts = new HashSet();
 	}
 
 	public ActionListener getSortByFirstNameListener() {
