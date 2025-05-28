@@ -11,10 +11,10 @@ import java.util.*;
 import java.awt.*;
 
 public class ContactsController {
-	public Set<Contact> contacts;
+	public ContactsView view = new ContactsView();
 
-	public ContactsController() {
-		this.contacts = new HashSet<>();
+	public ContactsController(ContactsView view) {
+		this.view = view;
 	}
 	
 	public void search(String searchField, DefaultListModel<Contact> listModel) {
@@ -23,14 +23,14 @@ public class ContactsController {
 
 	public void deleteSelectedContact(int index) {
 		if (index >= 0) {
-			contacts.remove(index);
+			view.contacts.remove(index);
 		} else {
 			JOptionPane.showMessageDialog(null, "Please select a contact to delete.");
 		}
 	}
 
 	public void sortAndDisplay(String criteria) {
-		contacts.sort((c1, c2) -> {
+		view.contacts.sort((c1, c2) -> {
 			switch (criteria) {
 			case "first":
 				return c1.getPrenom().compareToIgnoreCase(c2.getPrenom());
@@ -46,7 +46,7 @@ public class ContactsController {
 
 	public void filterContacts(String prefix, DefaultListModel<Contact> listModel) {
 		listModel.clear();
-		for (Contact c : contacts) {
+		for (Contact c : view.contacts) {
 			if (c.getNom().toLowerCase().startsWith(prefix)) {
 				listModel.addElement(c.getPrenom() + " " + c.getNom());
 			}

@@ -4,9 +4,12 @@ import javax.swing.*;
 import controllers.ContactsController;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
+
 import Models.Contact;
 
 public class ContactsView extends JFrame {
+	public Set<Contact> contacts = new HashSet<>();
     public JButton sortByFirstName = new JButton("Sort by First Name");
     public JButton sortByLastName = new JButton("Sort by Last Name");
     public JButton sortByCity = new JButton("Sort by City");
