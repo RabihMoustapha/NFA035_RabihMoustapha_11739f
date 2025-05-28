@@ -20,6 +20,7 @@ public class ContactsView extends JFrame {
         setSize(600, 400);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setVisible(true);
 
         JPanel topPanel = new JPanel(new FlowLayout());
         topPanel.add(sortByFirstName);

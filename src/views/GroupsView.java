@@ -17,7 +17,8 @@ public class GroupsView extends JFrame {
         setTitle("Groups");
         setSize(500, 400);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
 
         JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.add(new JLabel("Groups:"), BorderLayout.NORTH);

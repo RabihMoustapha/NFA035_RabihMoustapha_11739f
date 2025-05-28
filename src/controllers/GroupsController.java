@@ -9,7 +9,7 @@ import views.ViewContactView;
 
 import javax.swing.*;
 import java.awt.event.*;
-import java.util.ArrayList;
+import java.util.*;
 
 public class GroupsController {
     private GroupsView view;

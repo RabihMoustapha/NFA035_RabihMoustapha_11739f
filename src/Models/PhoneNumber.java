@@ -1,8 +1,7 @@
 package Models;
 
 import java.io.*;
-public class PhoneNumber implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class PhoneNumber {
 	private int regionCode, number;
 	
 	public PhoneNumber(int regionCode, int number) {
