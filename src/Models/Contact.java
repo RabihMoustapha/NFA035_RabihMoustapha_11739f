@@ -2,7 +2,6 @@ package Models;
 
 import Observables.MyObservable;
 import java.util.*;
-import java.io.*;
 
 public class Contact extends MyObservable {
 	private boolean changed = false;

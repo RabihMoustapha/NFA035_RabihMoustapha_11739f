@@ -1,10 +1,9 @@
 package Models;
-
-import java.io.*;
 import java.util.*;
+import Observables.MyObservable;
 
-public class Groupe implements Serializable{
-	private static final long serialVersionUID = 1L;
+public class Groupe extends MyObservable {
+    private boolean changed = false;
 	private String nom, description;
 	private static Set<Contact> contacts;
 
@@ -17,11 +16,17 @@ public class Groupe implements Serializable{
 	public void ajouterContact(Contact contact) {
 		if(!contacts.contains(contact)) {
 			contacts.add(contact);
+            setChanged();
+            notifyObservers();
+            changed = false;
 		}
 	}
 	
-	public void retirerContact(Contact contact) {
+	public void deleteContact(Contact contact) {
 		contacts.remove(contact);
+        setChanged();
+        notifyObservers();
+        changed = false;
 	}
 
     public String getNom() {
@@ -33,8 +38,8 @@ public class Groupe implements Serializable{
     }
     
 
-    public List<Contact> getContacts() {
-        return new ArrayList<>(contacts);
+    public Set<Contact> getContacts() {
+        return new HashSet<>(contacts);
     }
 
     public void setNom(String nom) {

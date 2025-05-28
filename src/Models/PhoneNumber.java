@@ -1,6 +1,5 @@
 package Models;
 
-import java.io.*;
 public class PhoneNumber {
 	private int regionCode, number;
 	
