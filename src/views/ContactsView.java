@@ -1,7 +1,10 @@
 package views;
 
 import javax.swing.*;
+import controllers.ContactsController;
 import java.awt.*;
+import java.awt.event.*;
+import Models.Contact;
 
 public class ContactsView extends JFrame {
     public JButton sortByFirstName = new JButton("Sort by First Name");
@@ -12,8 +15,8 @@ public class ContactsView extends JFrame {
     public JButton deleteContact = new JButton("Delete Contact");
     public JButton viewContact = new JButton("View Contact");
     public JTextField searchField = new JTextField(20);
-    public DefaultListModel<String> listModel = new DefaultListModel<>();
-    public JList<String> contactsList = new JList<>(listModel);
+    public DefaultListModel<Contact> listModel = new DefaultListModel<>();
+    public JList<Contact> contactsList = new JList<>(listModel);
 
     public ContactsView() {
         setTitle("Contacts");
@@ -40,5 +43,20 @@ public class ContactsView extends JFrame {
         add(topPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
+        
+        ContactsController ctrl = new ContactsController();
+		addNewContact.addActionListener(e -> new NewContactView());
+		updateContact.addActionListener(e -> new UpdateContactView());
+		viewContact.addActionListener(e -> new ViewContactView());
+		deleteContact.addActionListener(e -> ctrl.deleteSelectedContact(contactsList.getSelectedIndex()));
+		sortByFirstName.addActionListener(e -> ctrl.sortAndDisplay("first"));
+		sortByLastName.addActionListener(e -> ctrl.sortAndDisplay("last"));
+		sortByCity.addActionListener(e -> ctrl.sortAndDisplay("city"));
+		searchField.addKeyListener(new KeyAdapter(){
+			public void keyReleased(KeyEvent e) {
+				ctrl.search(searchField.getText(), listModel);
+			}
+		});
+				
     }
 }

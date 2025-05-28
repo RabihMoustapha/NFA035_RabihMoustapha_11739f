@@ -5,21 +5,45 @@ import views.NewContactView;
 import Models.PhoneNumber;
 import javax.swing.*;
 import java.awt.event.*;
+import java.io.*;
+import java.util.*;
+import controllers.ContactsController;
 
 public class NewContactController {
 	private NewContactView view;
 	private Contact newContact;
+	private ContactsController ctrl = new ContactsController();
 
-	public NewContactController(NewContactView view) {
-		this.view = view;
+	public NewContactController() {
+		initView();
+	}
+
+	private void initView() {
+		view.phoneNumbersList.setModel(view.phoneNumbersModel);
 	}
 
 	public ActionListener addNumberToList() {
 		return e -> {
-			PhoneNumber phone = new PhoneNumber(Integer.parseInt(view.regionCodeInput.getText().trim()), Integer.parseInt(view.phoneInput.getText().trim()));
-			view.phoneNumbersModel.addElement(phone);
-			view.regionCodeInput.setText("");
-			view.phoneInput.setText("");
+			try {
+				String regionCodeText = view.regionCodeInput.getText().trim();
+				String phoneText = view.phoneInput.getText().trim();
+
+				if (regionCodeText.isEmpty() || phoneText.isEmpty()) {
+					JOptionPane.showMessageDialog(view, "Region code and phone number cannot be empty");
+					return;
+				}
+
+				int regionCode = Integer.parseInt(regionCodeText);
+				int phoneNumber = Integer.parseInt(phoneText);
+
+				PhoneNumber phone = new PhoneNumber(regionCode, phoneNumber);
+				view.phoneNumbersModel.addElement(phone);
+
+				view.regionCodeInput.setText("");
+				view.phoneInput.setText("");
+			} catch (NumberFormatException ex) {
+				JOptionPane.showMessageDialog(view, "Please enter valid numbers for region code and phone number");
+			}
 		};
 	}
 
@@ -27,17 +51,27 @@ public class NewContactController {
 		return e -> {
 			String first = view.firstNameField.getText().trim();
 			String last = view.lastNameField.getText().trim();
+
 			if (first.isEmpty() || last.isEmpty() || view.phoneNumbersModel.getSize() == 0) {
-				JOptionPane.showMessageDialog(view, "Name and at least one phone number are required.");
+				JOptionPane.showMessageDialog(view,
+						"First name, last name and at least one phone number are required.");
 				return;
 			}
 
 			newContact = new Contact(first, last, view.cityField.getText().trim());
-			for (int i = 0; i < view.phoneNumbersModel.size(); i++) {
-				addNumberToList();
+			newContact.addPhoneNumber(view.phoneNumbersModel.getElementAt(0));
+
+			ctrl.contacts.add(newContact);
+
+			try {
+				ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat"));
+				oos.writeObject(newContact);
+				oos.close();
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
 			}
 
-			JOptionPane.showMessageDialog(view, "Contact saved.");
+			JOptionPane.showMessageDialog(view, "Contact saved successfully!");
 			view.dispose();
 		};
 	}
