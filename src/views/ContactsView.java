@@ -1,7 +1,6 @@
 package views;
 
 import javax.swing.*;
-import controllers.ContactsController;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -9,6 +8,7 @@ import java.util.*;
 import Models.Contact;
 
 public class ContactsView extends JFrame {
+	Contact c;
 	public Set<Contact> contacts = new HashSet<>();
     public JButton sortByFirstName = new JButton("Sort by First Name");
     public JButton sortByLastName = new JButton("Sort by Last Name");
@@ -21,7 +21,8 @@ public class ContactsView extends JFrame {
     public DefaultListModel<Contact> listModel = new DefaultListModel<>();
     public JList<Contact> contactsList = new JList<>(listModel);
 
-    public ContactsView() {
+    public ContactsView(Contact c) {
+    	this.c = c;
         setTitle("Contacts");
         setSize(600, 400);
         setLocationRelativeTo(null);
@@ -47,19 +48,18 @@ public class ContactsView extends JFrame {
         add(scrollPane, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
         
-        ContactsController ctrl = new ContactsController();
-		addNewContact.addActionListener(e -> new NewContactView());
-		updateContact.addActionListener(e -> new UpdateContactView());
-		viewContact.addActionListener(e -> new ViewContactView());
-		deleteContact.addActionListener(e -> ctrl.deleteSelectedContact(contactsList.getSelectedIndex()));
-		sortByFirstName.addActionListener(e -> ctrl.sortAndDisplay("first"));
-		sortByLastName.addActionListener(e -> ctrl.sortAndDisplay("last"));
-		sortByCity.addActionListener(e -> ctrl.sortAndDisplay("city"));
-		searchField.addKeyListener(new KeyAdapter(){
-			public void keyReleased(KeyEvent e) {
-				ctrl.search(searchField.getText(), listModel);
-			}
-		});
+//		addNewContact.addActionListener();
+//		updateContact.addActionListener(e -> new UpdateContactView());
+//		viewContact.addActionListener(e -> new ViewContactView());
+//		deleteContact.addActionListener(e -> ctrl.deleteSelectedContact(contactsList.getSelectedIndex()));
+//		sortByFirstName.addActionListener(e -> ctrl.sortAndDisplay("first"));
+//		sortByLastName.addActionListener(e -> ctrl.sortAndDisplay("last"));
+//		sortByCity.addActionListener(e -> ctrl.sortAndDisplay("city"));
+//		searchField.addKeyListener(new KeyAdapter(){
+//			public void keyReleased(KeyEvent e) {
+//				ctrl.search(searchField.getText(), listModel);
+//			}
+//		});
 				
     }
 }
