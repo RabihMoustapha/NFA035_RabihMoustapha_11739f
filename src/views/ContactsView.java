@@ -26,7 +26,7 @@ public class ContactsView extends JFrame {
         setTitle("Contacts");
         setSize(600, 400);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
 
         JPanel topPanel = new JPanel(new FlowLayout());
