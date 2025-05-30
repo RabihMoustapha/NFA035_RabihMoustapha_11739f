@@ -6,8 +6,10 @@ import java.util.*;
 public class Contact extends MyObservable {
 	private boolean changed = false;
 	private String nom, prenom, ville;
-	public Set<PhoneNumber> telephoneNumbers;
+	private Set<PhoneNumber> telephoneNumbers;
 
+	public Contact() {}
+	
 	public Contact(String nom, String prenom, String ville) {
 		this.nom = nom;
 		this.prenom = prenom;

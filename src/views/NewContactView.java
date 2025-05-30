@@ -1,5 +1,6 @@
 package views;
 
+import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -8,7 +9,7 @@ import java.io.*;
 import Models.Contact;
 
 public class NewContactView extends JFrame {
-	public Contact c;
+	public Contact c = new Contact();
 	public JTextField firstNameField = new JTextField(15);
 	public JTextField lastNameField = new JTextField(15);
 	public JTextField cityField = new JTextField(15);
@@ -58,7 +59,7 @@ public class NewContactView extends JFrame {
 		// Initialize controller
         addPhoneButton.addActionListener(e -> addPhoneNumber());
         saveButton.addActionListener(e -> saveContact());
-        clearButton.addActionListener(e -> clearData());
+        clearButton.addActionListener(e -> clearData(c));
 		
 //		addPhoneButton.addActionListener(new ActionListener() {
 //			public void actionPerformed(ActionEvent e) {
@@ -117,10 +118,6 @@ public class NewContactView extends JFrame {
 	
     private void saveContact() {
         try {
-            if (c == null) {
-                c = new Contact(null, null, null);
-            }
-            
             c.setNom(firstNameField.getText().trim());
             c.setPrenom(lastNameField.getText().trim());
             c.setVille(cityField.getText().trim());
@@ -131,7 +128,12 @@ public class NewContactView extends JFrame {
             }
             
             // Save to file
-            saveToFile(c);
+            try (ObjectOutputStream oos = new ObjectOutputStream(
+                    new FileOutputStream("Contacts.dat", true))) {
+                oos.writeObject(c);
+                oos.writeUTF("\n");
+                oos.close();
+            }
             
             JOptionPane.showMessageDialog(this, "Contact saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
             
@@ -142,16 +144,9 @@ public class NewContactView extends JFrame {
                 JOptionPane.ERROR_MESSAGE);
         }
     }
-	
-    private void saveToFile(Contact contact) throws IOException {
-        try (ObjectOutputStream oos = new ObjectOutputStream(
-                new FileOutputStream("contacts.dat", true))) {
-            oos.writeObject(contact);
-        }
-    }
     
-    private void clearData() {
-    	c.telephoneNumbers.clear();
+    private void clearData(Contact c) {
+    	c.getPhoneNumbers().clear();
 		regionCodeInput.setText("");
 		phoneInput.setText("");
     }
