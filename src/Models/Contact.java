@@ -2,11 +2,14 @@ package Models;
 
 import Observables.MyObservable;
 import java.util.*;
+import java.io.*;
 
-public class Contact extends MyObservable {
+public class Contact extends MyObservable implements Serializable{
 	private boolean changed = false;
-	private String nom, prenom, ville;
+	public String nom, prenom, ville;
 	private Set<PhoneNumber> telephoneNumbers;
+	
+	public Contact() {}
 	
 	public Contact(String nom, String prenom, String ville) {
 		this.nom = nom;
