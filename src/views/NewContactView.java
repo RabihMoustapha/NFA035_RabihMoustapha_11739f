@@ -86,9 +86,9 @@ public class NewContactView extends JFrame {
 
 	private void saveContact(Contact c) {
 		c = new Contact();
-		c.nom = firstNameField.getText().trim();
-		c.prenom = lastNameField.getText().trim();
-		c.ville = cityField.getText().trim();
+		c.setNom(firstNameField.getText().trim());
+		c.setPrenom(lastNameField.getText().trim());
+		c.setVille(cityField.getText().trim());
 		try {
 
 			// Add phone numbers
