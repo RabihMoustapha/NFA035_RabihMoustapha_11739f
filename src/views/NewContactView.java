@@ -9,18 +9,17 @@ import java.io.*;
 import Models.Contact;
 
 public class NewContactView extends JFrame {
-	public Contact c = new Contact();
-	public JTextField firstNameField = new JTextField(15);
-	public JTextField lastNameField = new JTextField(15);
-	public JTextField cityField = new JTextField(15);
-	public DefaultListModel<PhoneNumber> phoneNumbersModel = new DefaultListModel<>();
-	public JList<PhoneNumber> phoneNumbersList = new JList<>();
-	public JTextField phoneInput = new JTextField(15);
-	public JTextField regionCodeInput = new JTextField(15);
-	public JButton addPhoneButton = new JButton("Add Phone");
-	public JComboBox<String> groupsComboBox = new JComboBox<>();
-	public JButton saveButton = new JButton("Save");
-	public JButton clearButton = new JButton("ClearData");
+	private Contact c;
+	private JTextField firstNameField = new JTextField(15);
+	private JTextField lastNameField = new JTextField(15);
+	private JTextField cityField = new JTextField(15);
+	private DefaultListModel<PhoneNumber> phoneNumbersModel = new DefaultListModel<>();
+	private JList<PhoneNumber> phoneNumbersList = new JList<>();
+	private JTextField phoneInput = new JTextField(15);
+	private JTextField regionCodeInput = new JTextField(15);
+	private JButton addPhoneButton = new JButton("Add Phone");
+	private JComboBox<String> groupsComboBox = new JComboBox<>();
+	private JButton saveButton = new JButton("Save");
 
 	public NewContactView(Contact c) {
 		this.c = c;
@@ -45,7 +44,6 @@ public class NewContactView extends JFrame {
 		form.add(new JLabel("Phone Number:"));
 		form.add(phoneInput);
 		form.add(addPhoneButton);
-		form.add(clearButton);
 		form.add(new JLabel("Phone Numbers:"));
 		form.add(new JScrollPane(phoneNumbersList));
 		form.add(new JLabel("Group:"));
@@ -57,99 +55,56 @@ public class NewContactView extends JFrame {
 		form.add(buttonPanel);
 
 		// Initialize controller
-        addPhoneButton.addActionListener(e -> addPhoneNumber());
-        saveButton.addActionListener(e -> saveContact());
-        clearButton.addActionListener(e -> clearData(c));
-		
-//		addPhoneButton.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				try {
-//					c.addPhoneNumber(new PhoneNumber(Integer.parseInt(regionCodeInput.getText()),
-//							Integer.parseInt(phoneInput.getText())));
-//				} catch (Exception e1) {
-//					e1.printStackTrace();
-//				}
-//			}
-//		});
-
-//		saveButton.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				try {
-//					FileOutputStream fos = new FileOutputStream("Contacts.dat", true);
-//					ObjectOutputStream oos = new ObjectOutputStream(fos);
-//					oos.writeObject(
-//							new Contact(firstNameField.getText(), lastNameField.getText(), cityField.getText()));
-//					oos.writeUTF("\n");
-//					JOptionPane.showConfirmDialog(null, "Operation Successfuly");
-//					clearFields();
-//					oos.close();
-//				} catch (IOException ioe) {
-//					ioe.printStackTrace();
-//				}
-//			}
-//		});
+		addPhoneButton.addActionListener(e -> addPhoneNumber());
+		saveButton.addActionListener(e -> saveContact(c));
 
 		add(form);
 	}
-	
-    private void addPhoneNumber() {
-        try {
-            String phone = phoneInput.getText().trim();
-            String regionCode = regionCodeInput.getText().trim();
-            
-            if (!phone.isEmpty() && !regionCode.isEmpty()) {
-                PhoneNumber pn = new PhoneNumber(Integer.parseInt(regionCode), Integer.parseInt(phone));
-                phoneNumbersModel.addElement(pn);
-                phoneInput.setText("");
-                regionCodeInput.setText("");
-            } else {
-                JOptionPane.showMessageDialog(this, 
-                    "Please enter both region code and phone number", 
-                    "Input Error", 
-                    JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, 
-                "Error adding phone number: " + e.getMessage(), 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
-        }
-    }
-	
-    private void saveContact() {
-        try {
-            c.setNom(firstNameField.getText().trim());
-            c.setPrenom(lastNameField.getText().trim());
-            c.setVille(cityField.getText().trim());
-            
-            // Add phone numbers
-            for (int i = 0; i < phoneNumbersModel.size(); i++) {
-                c.addPhoneNumber(phoneNumbersModel.getElementAt(i));
-            }
-            
-            // Save to file
-            try (ObjectOutputStream oos = new ObjectOutputStream(
-                    new FileOutputStream("Contacts.dat", true))) {
-                oos.writeObject(c);
-                oos.writeUTF("\n");
-                oos.close();
-            }
-            
-            JOptionPane.showMessageDialog(this, "Contact saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, 
-                "Error saving contact: " + e.getMessage(), 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
-        }
-    }
-    
-    private void clearData(Contact c) {
-    	c.getPhoneNumbers().clear();
-		regionCodeInput.setText("");
-		phoneInput.setText("");
-    }
+
+	private void addPhoneNumber() {
+		try {
+			String phone = phoneInput.getText().trim();
+			String regionCode = regionCodeInput.getText().trim();
+
+			if (!phone.isEmpty() && !regionCode.isEmpty()) {
+				PhoneNumber pn = new PhoneNumber(Integer.parseInt(regionCode), Integer.parseInt(phone));
+				phoneNumbersModel.addElement(pn);
+				phoneInput.setText("");
+				regionCodeInput.setText("");
+			} else {
+				JOptionPane.showMessageDialog(this, "Please enter both region code and phone number", "Input Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this, "Error adding phone number: " + e.getMessage(), "Error",
+					JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	private void saveContact(Contact c) {
+		c.setNom(firstNameField.getText().trim());
+		c.setPrenom(lastNameField.getText().trim());
+		c.setVille(cityField.getText().trim());
+		try {
+			// Add phone numbers
+			for (int i = 0; i < phoneNumbersModel.size(); i++) {
+				c.addPhoneNumber(phoneNumbersModel.getElementAt(i));
+			}
+
+			// Save to file
+			try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat", true))) {
+				oos.writeObject(c);
+				oos.close();
+			}
+
+			JOptionPane.showMessageDialog(this, "Contact saved successfully!", "Success",
+					JOptionPane.INFORMATION_MESSAGE);
+
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this, "Error saving contact: " + e.getMessage(), "Error",
+					JOptionPane.ERROR_MESSAGE);
+		}
+	}
 
 	private void clearFields() {
 		firstNameField.setText("");

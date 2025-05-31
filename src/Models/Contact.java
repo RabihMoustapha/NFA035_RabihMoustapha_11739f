@@ -7,8 +7,6 @@ public class Contact extends MyObservable {
 	private boolean changed = false;
 	private String nom, prenom, ville;
 	private Set<PhoneNumber> telephoneNumbers;
-
-	public Contact() {}
 	
 	public Contact(String nom, String prenom, String ville) {
 		this.nom = nom;
