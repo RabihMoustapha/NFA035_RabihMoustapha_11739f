@@ -2,8 +2,8 @@ package Models;
 import java.util.*;
 import Observables.MyObservable;
 
-public class Groupe extends MyObservable {
-    private boolean changed = false;
+public class Groupe {
+//    private boolean changed = false;
 	private String nom, description;
 	private static Set<Contact> contacts;
 
@@ -16,17 +16,17 @@ public class Groupe extends MyObservable {
 	public void ajouterContact(Contact contact) {
 		if(!contacts.contains(contact)) {
 			contacts.add(contact);
-            setChanged();
-            notifyObservers();
-            changed = false;
+//            setChanged();
+//            notifyObservers();
+//            changed = false;
 		}
 	}
 	
 	public void deleteContact(Contact contact) {
 		contacts.remove(contact);
-        setChanged();
-        notifyObservers();
-        changed = false;
+//        setChanged();
+//        notifyObservers();
+//        changed = false;
 	}
 
     public String getNom() {

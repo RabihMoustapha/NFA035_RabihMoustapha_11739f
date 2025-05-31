@@ -4,9 +4,8 @@ import Observables.MyObservable;
 import java.util.*;
 import java.io.*;
 
-public class Contact extends MyObservable implements Serializable{
-	private static final long serialVersionUID = 1L;
-	private boolean changed = false;
+public class Contact implements Comparable<Contact>{
+//	private boolean changed = false;
 	public String nom, prenom, ville;
 	private Set<PhoneNumber> telephoneNumbers;
 	
@@ -21,17 +20,17 @@ public class Contact extends MyObservable implements Serializable{
 
 	public void addPhoneNumber(PhoneNumber pn) {
 		this.telephoneNumbers.add(pn);
-		setChanged();
-		notifyObservers();
-		changed = false;
+//		setChanged();
+//		notifyObservers();
+//		changed = false;
 	}
 
 	public void deletePhoneNumber(PhoneNumber number) {
 		if (this.telephoneNumbers.contains(number))
 			this.telephoneNumbers.remove(number);
-		setChanged();
-		notifyObservers();
-		changed = false;
+//		setChanged();
+//		notifyObservers();
+//		changed = false;
 	}
 	
 
