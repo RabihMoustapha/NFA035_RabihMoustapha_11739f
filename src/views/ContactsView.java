@@ -46,12 +46,48 @@ public class ContactsView extends JFrame {
 		add(topPanel, BorderLayout.NORTH);
 		add(scrollPane, BorderLayout.CENTER);
 		add(buttonPanel, BorderLayout.SOUTH);
+		
+		addNewContact.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new NewContactView(c);
+			}
+		});
+		
+		deleteContact.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		sortByFirstName.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		sortByLastName.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		sortByCity.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		updateContact.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
 
 		viewContact.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))) {
 				    List<Contact> contactList = (List<Contact>) ois.readObject();
-				    listModel.clear(); // Clear old list
+				    listModel.clear();
 				    for (Contact contact : contactList) {
 				        listModel.addElement(contact);
 				    }
