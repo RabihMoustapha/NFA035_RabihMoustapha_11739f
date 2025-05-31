@@ -96,7 +96,8 @@ public class NewContactView extends JFrame {
 //				c.addPhoneNumber(phoneNumbersModel.getElementAt(i));
 //			}
 
-			try (ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream("Contacts.dat")))) {
+			try (ObjectOutputStream oos = new ObjectOutputStream(
+					new BufferedOutputStream(new FileOutputStream("Contacts.dat")))) {
 				oos.writeObject(c);
 				oos.close();
 			}
