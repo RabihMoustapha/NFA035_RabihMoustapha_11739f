@@ -7,6 +7,7 @@ import java.io.*;
 
 
 public class Contact extends MyObservable implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private boolean changed = false;
 	public String nom, prenom, ville;
 	public List<PhoneNumber> telephoneNumbers;

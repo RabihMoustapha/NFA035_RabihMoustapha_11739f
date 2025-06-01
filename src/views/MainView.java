@@ -4,8 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import Models.Contact;
+import Models.Groupe;
 import views.ContactsView;
 import views.NewContactView;
+import views.NewGroupView;
 
 public class MainView extends JFrame {
 	public JButton contactsButton = new JButton("Contacts");
@@ -38,7 +40,9 @@ public class MainView extends JFrame {
 
 		groupsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new GroupsView();
+				Groupe g = new Groupe();
+				new GroupsView(g);
+				new NewGroupView(g);
 			}
 		});
 	}

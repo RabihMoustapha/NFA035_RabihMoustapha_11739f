@@ -15,7 +15,7 @@ public class NewContactView extends JFrame {
 	private JTextField lastNameField = new JTextField(15);
 	private JTextField cityField = new JTextField(15);
 	private JButton saveButton = new JButton("Save");
-	public DataClass cl = new DataClass();
+	public DataClass dc = new DataClass();
 
 	public NewContactView(Contact c) {
 		setTitle("New Contact");
@@ -35,8 +35,6 @@ public class NewContactView extends JFrame {
 		form.add(new JLabel("City:"));
 		form.add(cityField);
 
-		form.add(new JLabel("Phone Numbers:"));
-
 		// Button panel
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		buttonPanel.add(saveButton);
@@ -48,24 +46,22 @@ public class NewContactView extends JFrame {
 
 	private void saveContact(Contact c) {
 		c = new Contact();
-		c.setNom(firstNameField.getText().trim());
-		c.setPrenom(lastNameField.getText().trim());
-		c.setVille(cityField.getText().trim());
+		c.setNom(firstNameField.getText());
+		c.setPrenom(lastNameField.getText());
+		c.setVille(cityField.getText());
 
-		if (cl.contacts.contains(c)) {
-			JOptionPane.showMessageDialog(null, "Is the list already contain it");
-		} else {
-			cl.contacts.add(c);
+		if (dc.contacts.contains(c)) 
+			JOptionPane.showMessageDialog(null, "The contact is already entered");
 
-			try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat", true))) {
-				oos.writeObject(c);
-				JOptionPane.showMessageDialog(this, "Contact saved successfully!", "Success",
-						JOptionPane.INFORMATION_MESSAGE);
-				oos.close();
-			} catch (Exception e) {
-				JOptionPane.showMessageDialog(this, "Error saving contact: " + e.getMessage(), "Error",
-						JOptionPane.ERROR_MESSAGE);
-			}
+		dc.contacts.add(c);
+
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat", true))) {
+			oos.writeObject(c);
+			JOptionPane.showMessageDialog(null, "Contact saved successfully!");
+			oos.close();
+		} catch (IOException ioe) {
+			JOptionPane.showMessageDialog(this, "Error saving contact: " + ioe.getMessage(), "Error",
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }

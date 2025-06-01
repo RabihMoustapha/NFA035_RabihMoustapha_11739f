@@ -1,12 +1,20 @@
 package Models;
+
 import java.util.*;
 import Observables.MyObservable;
+import java.io.*;
 
-public class Groupe {
-//    private boolean changed = false;
-	private String nom, description;
-	private static List<Contact> contacts;
+public class Groupe extends MyObservable implements Serializable{
+	private static final long serialVersionUID = 1L;
+	private boolean changed = false;
+	public String nom, description;
+	public static List<Contact> contacts;
 
+	
+	public Groupe() {
+		this.contacts = new ArrayList<>();
+	}
+	
 	public Groupe(String nom, String description){
 		this.nom = nom;
 		this.description = description;
@@ -16,17 +24,17 @@ public class Groupe {
 	public void ajouterContact(Contact contact) {
 		if(!contacts.contains(contact)) {
 			contacts.add(contact);
-//            setChanged();
-//            notifyObservers();
-//            changed = false;
+            setChanged();
+            notifyObservers();
+            changed = false;
 		}
 	}
 	
 	public void deleteContact(Contact contact) {
 		contacts.remove(contact);
-//        setChanged();
-//        notifyObservers();
-//        changed = false;
+        setChanged();
+        notifyObservers();
+        changed = false;
 	}
 
     public String getNom() {

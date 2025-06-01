@@ -10,8 +10,7 @@ import Models.Contact;
 import Models.DataClass;
 
 public class ContactsView extends JFrame {
-	DataClass dl = new DataClass();
-	public Set<Contact> contacts = new HashSet<>();
+	public DataClass dl = new DataClass();
 	public JButton sortByFirstName = new JButton("Sort by First Name");
 	public JButton sortByLastName = new JButton("Sort by Last Name");
 	public JButton sortByCity = new JButton("Sort by City");
@@ -48,6 +47,8 @@ public class ContactsView extends JFrame {
 		add(topPanel, BorderLayout.NORTH);
 		add(scrollPane, BorderLayout.CENTER);
 		add(buttonPanel, BorderLayout.SOUTH);
+		
+		loadData();
 
 		addNewContact.addActionListener(e -> new NewContactView(c));
 		deleteContact.addActionListener(e -> deleteSelectedContact());
@@ -99,7 +100,7 @@ public class ContactsView extends JFrame {
 					JOptionPane.YES_NO_OPTION);
 			if (confirm == JOptionPane.YES_OPTION) {
 				dl.contacts.remove(selected);
-				try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat"))) {
+				try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat", true))) {
 					oos.writeObject(dl.contacts);
 					loadContacts();
 				} catch (Exception ex) {
@@ -124,5 +125,13 @@ public class ContactsView extends JFrame {
 	private void updateListModel(List<Contact> contacts) {
 		listModel.clear();
 		contacts.forEach(listModel::addElement);
+	}
+	
+	private void loadData() {
+		try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))){
+			listModel.addElement((Contact) ois.readObject());
+		}catch(IOException | ClassNotFoundException ioe) {
+			ioe.printStackTrace();
+		}
 	}
 }

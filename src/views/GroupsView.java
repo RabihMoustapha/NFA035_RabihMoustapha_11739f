@@ -2,18 +2,22 @@ package views;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
+
+import Models.Contact;
+import Models.Groupe;
 
 public class GroupsView extends JFrame {
-    public DefaultListModel<String> groupModel = new DefaultListModel<>();
-    public JList<String> groupList = new JList<>(groupModel);
-    public DefaultListModel<String> contactModel = new DefaultListModel<>();
-    public JList<String> groupContactsList = new JList<>(contactModel);
+    public DefaultListModel<Groupe> groupModel = new DefaultListModel<>();
+    public JList<Groupe> groupList = new JList<>(groupModel);
+    public DefaultListModel<Contact> contactModel = new DefaultListModel<>();
+    public JList<Contact> groupContactsList = new JList<>(contactModel);
 
     public JButton addGroupButton = new JButton("Add New Group");
     public JButton updateGroupButton = new JButton("Update Group");
     public JButton deleteGroupButton = new JButton("Delete Group");
 
-    public GroupsView() {
+    public GroupsView(Groupe g) {
         setTitle("Groups");
         setSize(500, 400);
         setLocationRelativeTo(null);
@@ -37,5 +41,38 @@ public class GroupsView extends JFrame {
         add(leftPanel, BorderLayout.WEST);
         add(rightPanel, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
+        
+        loadGroupData();
+        
+        addGroupButton.addActionListener(e -> {
+        	new NewGroupView(g);
+        });
+        
+        updateGroupButton.addActionListener(e -> updateGroup(g));
+        deleteGroupButton.addActionListener(e -> deleteGroup(g));
+    }
+    
+    private void loadGroupData() {
+    	try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Groups.dat"))){
+    		groupModel.addElement((Groupe) ois.readObject());
+    	}catch(IOException | ClassNotFoundException ioe) {
+    		ioe.printStackTrace();
+    	}
+    }
+    
+    private void loadContactsData() {
+    	try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Groups.dat"))){
+    		contactModel.addElement((Contact) ois.readObject());
+    	}catch(IOException | ClassNotFoundException ioe) {
+    		ioe.printStackTrace();
+    	}
+    }
+    
+    private void updateGroup(Groupe g) {
+    	
+    }
+    
+    private void deleteGroup(Groupe g) {
+    	
     }
 }
