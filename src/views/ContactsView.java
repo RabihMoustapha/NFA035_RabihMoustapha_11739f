@@ -88,10 +88,9 @@ public class ContactsView extends JFrame {
 		viewContact.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))) {
-				    List<Contact> contactList = (List<Contact>) ois.readObject();
 				    listModel.clear();
-				    for (Contact contact : contactList) {
-				        listModel.addElement(contact);
+				    for (Contact contact : dl.contacts) {
+				        listModel.addElement((Contact) ois.readObject());
 				    }
 				} catch (IOException | ClassNotFoundException ioe) {
 				    ioe.printStackTrace();

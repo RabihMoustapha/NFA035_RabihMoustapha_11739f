@@ -53,28 +53,20 @@ public class NewContactView extends JFrame {
 		c.setPrenom(lastNameField.getText().trim());
 		c.setVille(cityField.getText().trim());
 
-		try {
-			try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))) {
-				if (cl.contacts.contains(ois.readObject())) {
-					JOptionPane.showMessageDialog(null, "Is the list already contain it");
-				} else {
-					cl.contacts.add(c);
+		if (cl.contacts.contains(c)) {
+			JOptionPane.showMessageDialog(null, "Is the list already contain it");
+		} else {
+			cl.contacts.add(c);
 
-					try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat", true))) {
-						oos.writeObject(c);
-						JOptionPane.showMessageDialog(this, "Contact saved successfully!", "Success",
-								JOptionPane.INFORMATION_MESSAGE);
-						oos.close();
-					} catch (Exception e) {
-						JOptionPane.showMessageDialog(this, "Error saving contact: " + e.getMessage(), "Error",
-								JOptionPane.ERROR_MESSAGE);
-					}
-				}
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
+			try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat", true))) {
+				oos.writeObject(c);
+				JOptionPane.showMessageDialog(this, "Contact saved successfully!", "Success",
+						JOptionPane.INFORMATION_MESSAGE);
+				oos.close();
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(this, "Error saving contact: " + e.getMessage(), "Error",
+						JOptionPane.ERROR_MESSAGE);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 }
