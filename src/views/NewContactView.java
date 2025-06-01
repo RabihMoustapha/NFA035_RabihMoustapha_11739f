@@ -42,7 +42,6 @@ public class NewContactView extends JFrame {
 		buttonPanel.add(saveButton);
 		form.add(buttonPanel);
 
-		// Initialize controller
 		saveButton.addActionListener(e -> saveContact(c));
 		add(form);
 	}

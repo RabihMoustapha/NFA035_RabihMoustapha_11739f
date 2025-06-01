@@ -5,11 +5,11 @@ import Models.Contact;
 import Models.Groupe;
 
 public class DataClass {
-	public Set<Contact> contacts;
-	public Set<Groupe> groups;
+	public List<Contact> contacts;
+	public List<Groupe> groups;
 	
 	public DataClass() {
-		this.contacts = new HashSet<>();
-		this.groups = new HashSet<>();
+		this.contacts = new ArrayList<>();
+		this.groups = new ArrayList<>();
 	}
 }

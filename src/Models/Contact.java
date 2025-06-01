@@ -4,20 +4,22 @@ import Observables.MyObservable;
 import java.util.*;
 import java.io.*;
 
+
+
 public class Contact extends MyObservable implements Serializable{
 	private boolean changed = false;
 	public String nom, prenom, ville;
-	public Set<PhoneNumber> telephoneNumbers;
+	public List<PhoneNumber> telephoneNumbers;
 
 	public Contact() {
-		this.telephoneNumbers = new HashSet<>();
+		this.telephoneNumbers = new ArrayList<>();
 	}
 
 	public Contact(String nom, String prenom, String ville) {
 		this.nom = nom;
 		this.prenom = prenom;
 		this.ville = ville;
-		this.telephoneNumbers = new HashSet<>();
+		this.telephoneNumbers = new ArrayList<>();
 	}
 
 	public void addPhoneNumber(PhoneNumber pn) {
@@ -47,7 +49,7 @@ public class Contact extends MyObservable implements Serializable{
 		return this.ville;
 	}
 	
-	public Set<PhoneNumber> getNumbers() {
+	public List<PhoneNumber> getNumbers() {
 		return this.telephoneNumbers;
 	}
 
