@@ -5,12 +5,12 @@ import Observables.MyObservable;
 public class Groupe {
 //    private boolean changed = false;
 	private String nom, description;
-	private static Set<Contact> contacts;
+	private static List<Contact> contacts;
 
 	public Groupe(String nom, String description){
 		this.nom = nom;
 		this.description = description;
-		this.contacts = new HashSet<>();
+		this.contacts = new ArrayList<>();
 	}
 	
 	public void ajouterContact(Contact contact) {
