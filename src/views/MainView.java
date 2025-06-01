@@ -8,18 +8,10 @@ import views.ContactsView;
 import views.NewContactView;
 
 public class MainView extends JFrame {
-
-	public Contact c;
 	public JButton contactsButton = new JButton("Contacts");
 	public JButton groupsButton = new JButton("Groups");
 
-	public MainView() {
-		this.c = null;
-		initializeUI();
-	}
-
 	public MainView(Contact c) {
-		this.c = c;
 		initializeUI();
 	}
 
@@ -38,6 +30,7 @@ public class MainView extends JFrame {
 
 		contactsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Contact c = new Contact();
 				new ContactsView(c);
 				new NewContactView(c);
 			};
@@ -51,7 +44,8 @@ public class MainView extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		MainView mainView = new MainView();
+		Contact c = new Contact();
+		MainView mainView = new MainView(c);
 		mainView.setVisible(true);
 	}
 }

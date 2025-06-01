@@ -7,8 +7,10 @@ import java.io.*;
 import java.util.*;
 import java.util.List;
 import Models.Contact;
+import Models.DataClass;
 
 public class ContactsView extends JFrame {
+	DataClass dl = new DataClass();
 	public Set<Contact> contacts = new HashSet<>();
 	public JButton sortByFirstName = new JButton("Sort by First Name");
 	public JButton sortByLastName = new JButton("Sort by Last Name");

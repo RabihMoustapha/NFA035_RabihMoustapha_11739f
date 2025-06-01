@@ -2,7 +2,7 @@ package views;
 
 import java.util.*;
 import java.util.List;
-
+import Models.DataClass;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -14,8 +14,8 @@ public class NewContactView extends JFrame {
 	private JTextField firstNameField = new JTextField(15);
 	private JTextField lastNameField = new JTextField(15);
 	private JTextField cityField = new JTextField(15);
-//	private JComboBox<String> groupsComboBox = new JComboBox<>();
 	private JButton saveButton = new JButton("Save");
+	public DataClass cl = new DataClass();
 
 	public NewContactView(Contact c) {
 		setTitle("New Contact");
@@ -36,9 +36,6 @@ public class NewContactView extends JFrame {
 		form.add(cityField);
 
 		form.add(new JLabel("Phone Numbers:"));
-//		form.add(new JScrollPane(phoneNumbersList));
-//		form.add(new JLabel("Group:"));
-//		form.add(groupsComboBox);
 
 		// Button panel
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -47,7 +44,6 @@ public class NewContactView extends JFrame {
 
 		// Initialize controller
 		saveButton.addActionListener(e -> saveContact(c));
-
 		add(form);
 	}
 
@@ -58,34 +54,27 @@ public class NewContactView extends JFrame {
 		c.setVille(cityField.getText().trim());
 
 		try {
-			List<Contact> contacts = new ArrayList<>();
+			try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))) {
+				if (cl.contacts.contains(ois.readObject())) {
+					JOptionPane.showMessageDialog(null, "Is the list already contain it");
+				} else {
+					cl.contacts.add(c);
 
-			// Load existing contacts
-			File file = new File("Contacts.dat");
-			if (file.exists() && file.length() > 0) {
-				try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-					contacts = (List<Contact>) ois.readObject();
-				} catch (EOFException eof) {
-					// Ignore: file is empty
-				} catch (Exception e) {
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, "Error reading existing contacts: " + e.getMessage());
+					try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat", true))) {
+						oos.writeObject(c);
+						JOptionPane.showMessageDialog(this, "Contact saved successfully!", "Success",
+								JOptionPane.INFORMATION_MESSAGE);
+						oos.close();
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(this, "Error saving contact: " + e.getMessage(), "Error",
+								JOptionPane.ERROR_MESSAGE);
+					}
 				}
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
 			}
-
-			// Add new contact
-			contacts.add(c);
-
-			// Save entire list
-			try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
-				oos.writeObject(contacts);
-			}
-
-			JOptionPane.showMessageDialog(this, "Contact saved successfully!", "Success",
-					JOptionPane.INFORMATION_MESSAGE);
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(this, "Error saving contact: " + e.getMessage(), "Error",
-					JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
 		}
 	}
 }

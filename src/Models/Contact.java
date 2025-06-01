@@ -4,13 +4,15 @@ import Observables.MyObservable;
 import java.util.*;
 import java.io.*;
 
-public class Contact implements Comparable<Contact>{
-//	private boolean changed = false;
+public class Contact extends MyObservable implements Serializable{
+	private boolean changed = false;
 	public String nom, prenom, ville;
-	private Set<PhoneNumber> telephoneNumbers;
-	
-	public Contact() {}
-	
+	public Set<PhoneNumber> telephoneNumbers;
+
+	public Contact() {
+		this.telephoneNumbers = new HashSet<>();
+	}
+
 	public Contact(String nom, String prenom, String ville) {
 		this.nom = nom;
 		this.prenom = prenom;
@@ -20,19 +22,18 @@ public class Contact implements Comparable<Contact>{
 
 	public void addPhoneNumber(PhoneNumber pn) {
 		this.telephoneNumbers.add(pn);
-//		setChanged();
-//		notifyObservers();
-//		changed = false;
+		setChanged();
+		notifyObservers();
+		changed = false;
 	}
 
 	public void deletePhoneNumber(PhoneNumber number) {
-		if (this.telephoneNumbers.contains(number))
+		if(this.telephoneNumbers.contains(number))
 			this.telephoneNumbers.remove(number);
-//		setChanged();
-//		notifyObservers();
-//		changed = false;
+		setChanged();
+		notifyObservers();
+		changed = false;
 	}
-	
 
 	public String getNom() {
 		return this.nom;
@@ -46,7 +47,7 @@ public class Contact implements Comparable<Contact>{
 		return this.ville;
 	}
 	
-	public Set getPhoneNumbers() {
+	public Set<PhoneNumber> getNumbers() {
 		return this.telephoneNumbers;
 	}
 
@@ -63,6 +64,6 @@ public class Contact implements Comparable<Contact>{
 	}
 
 	public String toString() {
-		return this.nom + " " + this.prenom + ": " + this.ville + " " + this.telephoneNumbers;
+		return this.nom + " " + this.prenom + ": " + this.ville;
 	}
 }
