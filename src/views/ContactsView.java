@@ -57,7 +57,7 @@ public class ContactsView extends JFrame {
 		
 		deleteContact.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				deleteSelectedContact();
 			}
 		});
 		
@@ -88,15 +88,50 @@ public class ContactsView extends JFrame {
 		viewContact.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))) {
+				    List<Contact> contactList = (List<Contact>) ois.readObject();
 				    listModel.clear();
-				    for (Contact contact : dl.contacts) {
-				        listModel.addElement((Contact) ois.readObject());
-				    }
-				} catch (IOException | ClassNotFoundException ioe) {
+				    for (Contact contact : contactList) {
+				        listModel.addElement(contact);
+				    } 
+				}catch (IOException | ClassNotFoundException ioe) {
 				    ioe.printStackTrace();
 				    JOptionPane.showMessageDialog(null, "Failed to load contacts: " + ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+					}
 				}
-			}
-		});
+			});
 	}
-}
+	
+    private void deleteSelectedContact() {
+        Contact selected = contactsList.getSelectedValue();
+        if (selected != null) {
+            int confirm = JOptionPane.showConfirmDialog(this, 
+                "Delete " + selected.getNom() + "?", 
+                "Confirm Delete", JOptionPane.YES_NO_OPTION);
+            
+            if (confirm == JOptionPane.YES_OPTION) {
+                try {
+                    Set<Contact> contacts = (Set<Contact>) dl.contacts;
+                    contacts.remove(selected);
+                    dl.contacts.add(selected);
+                    loadContacts();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Error deleting contact", "Error", 
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }
+    
+    private void loadContacts() {
+            try {
+                listModel.clear();
+                Set<Contact> contacts = dl.contacts;
+                contacts.forEach(listModel::addElement);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, 
+                    "Error loading contacts: " + ex.getMessage(), 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            }
+    	}
+    }
