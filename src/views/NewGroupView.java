@@ -46,12 +46,14 @@ public class NewGroupView extends JFrame {
 
 		if (groups.contains(g)) {
 			JOptionPane.showMessageDialog(null, "The Group is already created");
+			return;
 		} else {
 			groups.add(g);
 
-			try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Groups.dat", true))) {
+			try (FileOutputStream fos = new FileOutputStream("Groups.dat", true); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
 				oos.writeObject(g);
 				JOptionPane.showMessageDialog(null, "Yes its entered");
+				fos.write("\n".getBytes());
 				oos.close();
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
@@ -60,10 +62,29 @@ public class NewGroupView extends JFrame {
 	}
 
 	private void loadData() {
-		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))) {
-			contactListModel.addElement((Contact) ois.readObject());
-		} catch (IOException | ClassNotFoundException ioe) {
-			ioe.printStackTrace();
-		}
+	    contactListModel.clear();
+
+	    try (FileInputStream fis = new FileInputStream("Contacts.dat"); ObjectInputStream ois = new ObjectInputStream(fis)) {
+	        while (true) {
+	            Contact contact = (Contact) ois.readObject();
+	            contactListModel.addElement(contact);
+	            if (fis.available() > 0) {
+	                fis.skip(1);
+	            }
+	        }
+	    } 
+	    catch (EOFException e) {
+	        // This is normal - we've reached end of file
+	    }
+	    catch (FileNotFoundException e) {
+	        System.out.println("Contacts file not found. It will be created when you save contacts.");
+	    }
+	    catch (IOException | ClassNotFoundException e) {
+	        e.printStackTrace();
+	        JOptionPane.showMessageDialog(this, 
+	            "Error loading contacts: " + e.getMessage(),
+	            "Error", 
+	            JOptionPane.ERROR_MESSAGE);
+	    }
 	}
 }
