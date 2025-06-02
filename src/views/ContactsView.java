@@ -7,10 +7,10 @@ import java.io.*;
 import java.util.*;
 import java.util.List;
 import Models.Contact;
-import Models.DataClass;
 
 public class ContactsView extends JFrame {
-	public DataClass dl = new DataClass();
+	public List<Contact> contacts = new ArrayList<>();
+	public Contact c;
 	public JButton sortByFirstName = new JButton("Sort by First Name");
 	public JButton sortByLastName = new JButton("Sort by Last Name");
 	public JButton sortByCity = new JButton("Sort by City");
@@ -23,6 +23,7 @@ public class ContactsView extends JFrame {
 	public JList<Contact> contactsList = new JList<>(listModel);
 
 	public ContactsView(Contact c) {
+		this.c = c;
 		setTitle("Contacts");
 		setSize(600, 400);
 		setLocationRelativeTo(null);
@@ -55,21 +56,39 @@ public class ContactsView extends JFrame {
 		loadContacts();
 
 		sortByFirstName.addActionListener(e -> {
-			List<Contact> sorted = new ArrayList<>(dl.contacts);
-			sorted.sort(Comparator.comparing(Contact::getPrenom));
-			updateListModel(sorted);
+			List<Contact> contacts = new ArrayList<>();
+			try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))){
+				contacts.add((Contact) ois.readObject());
+				contacts.sort(Comparator.comparing(Contact::getPrenom));
+			}catch(IOException | ClassNotFoundException ioe) {
+				ioe.printStackTrace();
+			}
+			updateListModel(contacts);
 		});
 
 		sortByLastName.addActionListener(e -> {
-			List<Contact> sorted = new ArrayList<>(dl.contacts);
-			sorted.sort(Comparator.comparing(Contact::getNom));
-			updateListModel(sorted);
+			List<Contact> contacts = new ArrayList<>();
+			try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))){
+				contacts.add((Contact) ois.readObject());
+				contacts.sort(Comparator.comparing(Contact::getNom));
+			}catch(IOException ioe) {
+				ioe.printStackTrace();
+			} catch (ClassNotFoundException cnfe) {
+				cnfe.printStackTrace();
+			}
+			updateListModel(contacts);
 		});
 
 		sortByCity.addActionListener(e -> {
-			List<Contact> sorted = new ArrayList<>(dl.contacts);
-			sorted.sort(Comparator.comparing(Contact::getVille));
-			updateListModel(sorted);
+			try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))){
+				contacts.add((Contact) ois.readObject());
+				contacts.sort(Comparator.comparing(Contact::getVille));
+			}catch(IOException ioe) {
+				ioe.printStackTrace();
+			} catch (ClassNotFoundException cnfe) {
+				cnfe.printStackTrace();
+			}
+			updateListModel(contacts);
 		});
 
 		updateContact.addActionListener(e -> {
@@ -83,14 +102,10 @@ public class ContactsView extends JFrame {
 	}
 
 	private void viewContacts() {
-		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))) {
-			List<Contact> contacts = ((List<Contact>) ois.readObject());
-			updateListModel(contacts);
-		} catch (IOException | ClassNotFoundException ioe) {
-			ioe.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Failed to load contacts: " + ioe.getMessage(), "Error",
-					JOptionPane.ERROR_MESSAGE);
-		}
+			JOptionPane.showMessageDialog(null,
+					"Prenom" + listModel.getElementAt(0) + 
+					"\nNom" + listModel.getElementAt(1) +
+					"\nVille" + listModel.getElementAt(ABORT));
 	}
 
 	private void deleteSelectedContact() {
@@ -99,10 +114,9 @@ public class ContactsView extends JFrame {
 			int confirm = JOptionPane.showConfirmDialog(this, "Delete " + selected.getNom() + "?", "Confirm Delete",
 					JOptionPane.YES_NO_OPTION);
 			if (confirm == JOptionPane.YES_OPTION) {
-				dl.contacts.remove(selected);
+				contacts.remove(selected);
 				try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat", true))) {
-					oos.writeObject(dl.contacts);
-					loadContacts();
+					oos.writeObject(contacts);
 				} catch (Exception ex) {
 					JOptionPane.showMessageDialog(this, "Error deleting contact", "Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -115,7 +129,12 @@ public class ContactsView extends JFrame {
 	private void loadContacts() {
 		try {
 			listModel.clear();
-			dl.contacts.forEach(listModel::addElement);
+			try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))){
+			contacts.add((Contact) ois.readObject());
+			contacts.forEach(listModel::addElement);
+			}catch(IOException | ClassNotFoundException ioe) {
+				ioe.printStackTrace();
+			}
 		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(this, "Error loading contacts: " + ex.getMessage(), "Error",
 					JOptionPane.ERROR_MESSAGE);

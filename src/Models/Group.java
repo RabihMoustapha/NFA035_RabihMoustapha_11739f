@@ -4,18 +4,18 @@ import java.util.*;
 import Observables.MyObservable;
 import java.io.*;
 
-public class Groupe extends MyObservable implements Serializable{
+public class Group extends MyObservable implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private boolean changed = false;
 	public String nom, description;
 	public static List<Contact> contacts;
 
 	
-	public Groupe() {
+	public Group() {
 		this.contacts = new ArrayList<>();
 	}
 	
-	public Groupe(String nom, String description){
+	public Group(String nom, String description){
 		this.nom = nom;
 		this.description = description;
 		this.contacts = new ArrayList<>();

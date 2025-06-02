@@ -5,11 +5,11 @@ import java.awt.*;
 import java.io.*;
 
 import Models.Contact;
-import Models.Groupe;
+import Models.Group;
 
 public class GroupsView extends JFrame {
-    public DefaultListModel<Groupe> groupModel = new DefaultListModel<>();
-    public JList<Groupe> groupList = new JList<>(groupModel);
+    public DefaultListModel<Group> groupModel = new DefaultListModel<>();
+    public JList<Group> groupList = new JList<>(groupModel);
     public DefaultListModel<Contact> contactModel = new DefaultListModel<>();
     public JList<Contact> groupContactsList = new JList<>(contactModel);
 
@@ -17,7 +17,7 @@ public class GroupsView extends JFrame {
     public JButton updateGroupButton = new JButton("Update Group");
     public JButton deleteGroupButton = new JButton("Delete Group");
 
-    public GroupsView(Groupe g) {
+    public GroupsView(Group g) {
         setTitle("Groups");
         setSize(500, 400);
         setLocationRelativeTo(null);
@@ -54,7 +54,7 @@ public class GroupsView extends JFrame {
     
     private void loadGroupData() {
     	try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Groups.dat"))){
-    		groupModel.addElement((Groupe) ois.readObject());
+    		groupModel.addElement((Group) ois.readObject());
     	}catch(IOException | ClassNotFoundException ioe) {
     		ioe.printStackTrace();
     	}
@@ -68,11 +68,11 @@ public class GroupsView extends JFrame {
     	}
     }
     
-    private void updateGroup(Groupe g) {
+    private void updateGroup(Group g) {
     	
     }
     
-    private void deleteGroup(Groupe g) {
+    private void deleteGroup(Group g) {
     	
     }
 }
