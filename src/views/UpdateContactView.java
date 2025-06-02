@@ -20,7 +20,7 @@ public class UpdateContactView extends JFrame {
         setTitle("Update Contact");
         setSize(400, 500);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel form = new JPanel(new GridLayout(0, 1));
         form.add(new JLabel("First Name:"));

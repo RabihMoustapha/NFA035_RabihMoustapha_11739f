@@ -55,7 +55,7 @@ public class NewContactView extends JFrame {
 		} else {
 			contacts.add(c);
 
-			try (FileOutputStream fos = new FileOutputStream("Contacts.dat", true); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+			try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat", true))) {
 				oos.writeObject(c);
 				JOptionPane.showMessageDialog(null, "Contact saved successfully!");
 				oos.close();
