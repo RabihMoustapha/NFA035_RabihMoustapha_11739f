@@ -49,11 +49,12 @@ public class ContactsView extends JFrame {
 		add(scrollPane, BorderLayout.CENTER);
 		add(buttonPanel, BorderLayout.SOUTH);
 		
+		loadContacts();
 		loadData();
 
 		addNewContact.addActionListener(e -> new NewContactView(c));
 		deleteContact.addActionListener(e -> deleteSelectedContact());
-		loadContacts();
+
 
 		sortByFirstName.addActionListener(e -> {
 			List<Contact> contacts = new ArrayList<>();

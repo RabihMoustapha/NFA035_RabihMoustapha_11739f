@@ -5,6 +5,7 @@ import java.awt.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
+
 import Models.Contact;
 import Models.Group;
 
@@ -67,6 +68,7 @@ public class GroupsView extends JFrame {
 }
 
 	private void displayData() {
+		groupModel.clear();
 		groups.forEach(groupModel::addElement);
 	}
 
