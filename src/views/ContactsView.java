@@ -59,8 +59,9 @@ public class ContactsView extends JFrame {
 		sortByFirstName.addActionListener(e -> {
 			List<Contact> contacts = new ArrayList<>();
 			try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))){
-				contacts.add((Contact) ois.readObject());
 				contacts.sort(Comparator.comparing(Contact::getPrenom));
+				contacts.add((Contact) ois.readObject());
+				ois.close();
 			}catch(IOException | ClassNotFoundException ioe) {
 				ioe.printStackTrace();
 			}

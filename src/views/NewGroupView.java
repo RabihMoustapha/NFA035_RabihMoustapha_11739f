@@ -52,8 +52,11 @@ public class NewGroupView extends JFrame {
 		} else {
 			groups.add(g);
 
-			try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Groups.dat", true))) {
+			try  {
+				FileOutputStream fos =  new FileOutputStream("Groups.dat", true);
+				ObjectOutputStream oos = new ObjectOutputStream(fos);
 				oos.writeObject(g);
+				oos.writeUTF("\n");
 				oos.close();
 				JOptionPane.showMessageDialog(null, "Yes its entered");
 			} catch (IOException ioe) {
@@ -73,8 +76,14 @@ public class NewGroupView extends JFrame {
 	
 	private void loadContactsData() {
 		List<Contact> newContacts = new ArrayList<>();
-		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))){
-			contacts.add((Contact) ois.readObject());
+		try {
+			FileInputStream fis = new FileInputStream("Contacts.dat");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			while(fis.available() > 0) {
+				contacts.add((Contact) ois.readObject());
+				ois.readUTF();
+			}
+			ois.close();
 		} catch (IOException | ClassNotFoundException ioe) {
 	        ioe.printStackTrace();
 	        JOptionPane.showMessageDialog(this, 
@@ -87,8 +96,14 @@ public class NewGroupView extends JFrame {
 	
 	private void loadGroupsData() {
 		List<Group> newGroup = new ArrayList<>();
-		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Groups.dat"))){
-			newGroup.add((Group) ois.readObject());
+		try {
+			FileInputStream fis = new FileInputStream("Groups.dat");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			while(fis.available() > 0) {
+				newGroup.add((Group) ois.readObject());
+				ois.readUTF();
+			}
+			ois.close();
 		} catch (IOException | ClassNotFoundException ioe) {
 	        ioe.printStackTrace();
 	        JOptionPane.showMessageDialog(this, 

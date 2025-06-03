@@ -57,6 +57,7 @@ public class NewContactView extends JFrame {
 
 			try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat", true))) {
 				oos.writeObject(c);
+				oos.writeUTF("\n");
 				JOptionPane.showMessageDialog(null, "Contact saved successfully!");
 				oos.close();
 			} catch (IOException ioe) {
@@ -67,8 +68,14 @@ public class NewContactView extends JFrame {
 	}
 
 	private void loadContacts() {
-		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))) {
-			contacts.add((Contact) ois.readObject());
+		try {
+			FileInputStream fis = new FileInputStream("Contacts.dat");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			while(fis.available() > 0) {
+				contacts.add((Contact) ois.readObject());
+				ois.readUTF();
+			}
+			ois.close();
 		} catch (IOException | ClassNotFoundException ioe) {
 			ioe.printStackTrace();
 		}
