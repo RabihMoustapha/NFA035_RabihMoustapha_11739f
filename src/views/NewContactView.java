@@ -11,7 +11,7 @@ import Models.Contact;
 
 public class NewContactView extends JFrame {
 	private Contact c;
-	private List<Contact> contacts = new ArrayList<>();
+	private List<Contact> contacts;
 	private JTextField firstNameField = new JTextField(15);
 	private JTextField lastNameField = new JTextField(15);
 	private JTextField cityField = new JTextField(15);
@@ -19,6 +19,8 @@ public class NewContactView extends JFrame {
 
 	public NewContactView(Contact c) {
 		this.c = c;
+		contacts = new ArrayList<>();
+		loadContacts(); // Load existing contacts from file
 		setTitle("New Contact");
 		setSize(400, 500);
 		setLocationRelativeTo(null);
@@ -35,7 +37,7 @@ public class NewContactView extends JFrame {
 		form.add(lastNameField);
 		form.add(new JLabel("City:"));
 		form.add(cityField);
-
+		
 		// Button panel
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		buttonPanel.add(saveButton);
@@ -55,11 +57,11 @@ public class NewContactView extends JFrame {
 		} else {
 			contacts.add(c);
 
-			try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat", true))) {
-				oos.writeObject(c);
-				oos.writeUTF("\n");
+			try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat"))) {
+				for (Contact contact : contacts) {
+					oos.writeObject(contact); // save each contact
+				}
 				JOptionPane.showMessageDialog(null, "Contact saved successfully!");
-				oos.close();
 			} catch (IOException ioe) {
 				JOptionPane.showMessageDialog(this, "Error saving contact: " + ioe.getMessage(), "Error",
 						JOptionPane.ERROR_MESSAGE);
@@ -69,16 +71,17 @@ public class NewContactView extends JFrame {
 
 	private void loadContacts() {
 		List<Contact> newContacts = new ArrayList<>();
-		try {
-			FileInputStream fis = new FileInputStream("Contacts.dat");
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			while (fis.available() > 0) {
-				newContacts.add((Contact) ois.readObject());
-				ois.readUTF();
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))) {
+			while (true) {
+				try {
+					Contact c = (Contact) ois.readObject();
+					newContacts.add(c);
+				} catch (EOFException eof) {
+					break; // Reached end of file
+				}
 			}
-			ois.close();
-		} catch (IOException | ClassNotFoundException ioe) {
-			ioe.printStackTrace();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
 		}
 		contacts = newContacts;
 	}

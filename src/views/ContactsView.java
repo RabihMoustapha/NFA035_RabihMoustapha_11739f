@@ -2,157 +2,153 @@ package views;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
 import Models.Contact;
 
 public class ContactsView extends JFrame {
-	public List<Contact> contacts = new ArrayList<>();
-	public Contact c;
-	public JButton sortByFirstName = new JButton("Sort by First Name");
-	public JButton sortByLastName = new JButton("Sort by Last Name");
-	public JButton sortByCity = new JButton("Sort by City");
-	public JButton addNewContact = new JButton("Add New Contact");
-	public JButton updateContact = new JButton("Update Contact");
-	public JButton deleteContact = new JButton("Delete Contact");
-	public JButton viewContact = new JButton("View Contact");
-	public JTextField searchField = new JTextField(20);
-	public DefaultListModel<Contact> listModel = new DefaultListModel<>();
-	public JList<Contact> contactsList = new JList<>(listModel);
+    public List<Contact> contacts;
+    public Contact c;
 
-	public ContactsView(Contact c) {
-		this.c = c;
-		setTitle("Contacts");
-		setSize(600, 400);
-		setLocationRelativeTo(null);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setVisible(true);
+    public JButton sortByFirstName = new JButton("Sort by First Name");
+    public JButton sortByLastName = new JButton("Sort by Last Name");
+    public JButton sortByCity = new JButton("Sort by City");
+    public JButton addNewContact = new JButton("Add New Contact");
+    public JButton updateContact = new JButton("Update Contact");
+    public JButton deleteContact = new JButton("Delete Contact");
+    public JButton viewContact = new JButton("View Contact");
 
-		JPanel topPanel = new JPanel(new FlowLayout());
-		topPanel.add(sortByFirstName);
-		topPanel.add(sortByLastName);
-		topPanel.add(sortByCity);
-		topPanel.add(searchField);
+    public JTextField searchField = new JTextField(20);
+    public DefaultListModel<Contact> listModel = new DefaultListModel<>();
+    public JList<Contact> contactsList = new JList<>(listModel);
 
-		JPanel buttonPanel = new JPanel(new FlowLayout());
-		buttonPanel.add(addNewContact);
-		buttonPanel.add(updateContact);
-		buttonPanel.add(deleteContact);
-		buttonPanel.add(viewContact);
+    public ContactsView(Contact c) {
+        this.c = c;
+		contacts = new ArrayList<>();
+		loadContacts(); // Load existing contacts from file
+        setTitle("Contacts");
+        setSize(600, 400);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		JScrollPane scrollPane = new JScrollPane(contactsList);
+        JPanel topPanel = new JPanel(new FlowLayout());
+        topPanel.add(sortByFirstName);
+        topPanel.add(sortByLastName);
+        topPanel.add(sortByCity);
+        topPanel.add(searchField);
 
-		setLayout(new BorderLayout());
-		add(topPanel, BorderLayout.NORTH);
-		add(scrollPane, BorderLayout.CENTER);
-		add(buttonPanel, BorderLayout.SOUTH);
-		
-		loadContacts();
-		loadData();
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(addNewContact);
+        buttonPanel.add(updateContact);
+        buttonPanel.add(deleteContact);
+        buttonPanel.add(viewContact);
 
-		addNewContact.addActionListener(e -> new NewContactView(c));
-		deleteContact.addActionListener(e -> deleteSelectedContact());
+        JScrollPane scrollPane = new JScrollPane(contactsList);
 
+        setLayout(new BorderLayout());
+        add(topPanel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
 
-		sortByFirstName.addActionListener(e -> {
-			List<Contact> contacts = new ArrayList<>();
-			try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))){
-				contacts.sort(Comparator.comparing(Contact::getPrenom));
-				contacts.add((Contact) ois.readObject());
-				ois.close();
-			}catch(IOException | ClassNotFoundException ioe) {
-				ioe.printStackTrace();
-			}
-			updateListModel(contacts);
-		});
+        loadContacts();
 
-		sortByLastName.addActionListener(e -> {
-			List<Contact> contacts = new ArrayList<>();
-			try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))){
-				contacts.add((Contact) ois.readObject());
-				contacts.sort(Comparator.comparing(Contact::getNom));
-			}catch(IOException ioe) {
-				ioe.printStackTrace();
-			} catch (ClassNotFoundException cnfe) {
-				cnfe.printStackTrace();
-			}
-			updateListModel(contacts);
-		});
+        addNewContact.addActionListener(e -> new NewContactView(new Contact()));
 
-		sortByCity.addActionListener(e -> {
-			try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))){
-				contacts.add((Contact) ois.readObject());
-				contacts.sort(Comparator.comparing(Contact::getVille));
-			}catch(IOException ioe) {
-				ioe.printStackTrace();
-			} catch (ClassNotFoundException cnfe) {
-				cnfe.printStackTrace();
-			}
-			updateListModel(contacts);
-		});
+        deleteContact.addActionListener(e -> deleteSelectedContact());
 
-		updateContact.addActionListener(e -> {
-			Contact selected = contactsList.getSelectedValue();
-			if (selected != null) {
-				new NewContactView(selected);
-			} else {
-				JOptionPane.showMessageDialog(this, "Please select a contact to update");
-			}
-		});
-	}
+        viewContact.addActionListener(e -> viewContact());
 
-	private void viewContacts() {
-			JOptionPane.showMessageDialog(null,
-					"Prenom" + listModel.getElementAt(0) + 
-					"\nNom" + listModel.getElementAt(1) +
-					"\nVille" + listModel.getElementAt(ABORT));
-	}
+        updateContact.addActionListener(e -> {
+            Contact selected = contactsList.getSelectedValue();
+            if (selected != null) {
+                new NewContactView(selected);
+            } else {
+                JOptionPane.showMessageDialog(this, "Please select a contact to update");
+            }
+        });
 
-	private void deleteSelectedContact() {
-		Contact selected = contactsList.getSelectedValue();
-		if (selected != null) {
-			int confirm = JOptionPane.showConfirmDialog(this, "Delete " + selected.getNom() + "?", "Confirm Delete",
-					JOptionPane.YES_NO_OPTION);
-			if (confirm == JOptionPane.YES_OPTION) {
-				contacts.remove(selected);
-				try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat", true))) {
-					oos.writeObject(contacts);
-				} catch (Exception ex) {
-					JOptionPane.showMessageDialog(this, "Error deleting contact", "Error", JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		} else {
-			JOptionPane.showMessageDialog(this, "Please select a contact to delete");
-		}
-	}
+        sortByFirstName.addActionListener(e -> {
+            List<Contact> sorted = new ArrayList<>(contacts);
+            sorted.sort(Comparator.comparing(Contact::getPrenom));
+            updateListModel(sorted);
+        });
 
-	private void loadContacts() {
-		try {
-			listModel.clear();
-			try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))){
-			contacts.add((Contact) ois.readObject());
-			contacts.forEach(listModel::addElement);
-			}catch(IOException | ClassNotFoundException ioe) {
-				ioe.printStackTrace();
-			}
-		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(this, "Error loading contacts: " + ex.getMessage(), "Error",
-					JOptionPane.ERROR_MESSAGE);
-		}
-	}
+        sortByLastName.addActionListener(e -> {
+            List<Contact> sorted = new ArrayList<>(contacts);
+            sorted.sort(Comparator.comparing(Contact::getNom));
+            updateListModel(sorted);
+        });
 
-	private void updateListModel(List<Contact> contacts) {
-		listModel.clear();
-		contacts.forEach(listModel::addElement);
-	}
-	
-	private void loadData() {
-		try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))){
-			listModel.addElement((Contact) ois.readObject());
-		}catch(IOException | ClassNotFoundException ioe) {
-			ioe.printStackTrace();
-		}
-	}
+        sortByCity.addActionListener(e -> {
+            List<Contact> sorted = new ArrayList<>(contacts);
+            sorted.sort(Comparator.comparing(Contact::getVille));
+            updateListModel(sorted);
+        });
+
+        setVisible(true);
+    }
+
+    private void loadContacts() {
+        listModel.clear();
+        contacts.clear();
+
+        File file = new File("Contacts.dat");
+        if (!file.exists()) {
+            return; // No contacts to load
+        }
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            while (true) {
+                try {
+                    Contact contact = (Contact) ois.readObject();
+                    contacts.add(contact);
+                    listModel.addElement(contact);
+                } catch (EOFException eof) {
+                    break; // reached end of file
+                }
+            }
+        } catch (IOException | ClassNotFoundException ioe) {
+            JOptionPane.showMessageDialog(this, "Error loading contacts: " + ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void updateListModel(List<Contact> newContacts) {
+        listModel.clear();
+        newContacts.forEach(listModel::addElement);
+    }
+
+    private void deleteSelectedContact() {
+        Contact selected = contactsList.getSelectedValue();
+        if (selected != null) {
+            int confirm = JOptionPane.showConfirmDialog(this, "Delete " + selected.getNom() + "?", "Confirm Delete",
+                    JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                contacts.remove(selected);
+                updateListModel(contacts);
+                // Overwrite the file with updated contacts
+                try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat"))) {
+                    for (Contact contact : contacts) {
+                        oos.writeObject(contact);
+                    }
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Error deleting contact: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select a contact to delete");
+        }
+    }
+
+    private void viewContact() {
+        Contact selected = contactsList.getSelectedValue();
+        if (selected != null) {
+            JOptionPane.showMessageDialog(this,
+                    "First Name: " + selected.getPrenom() + "\n" +
+                    "Last Name: " + selected.getNom() + "\n" +
+                    "City: " + selected.getVille());
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select a contact to view");
+        }
+    }
 }
