@@ -68,16 +68,18 @@ public class NewContactView extends JFrame {
 	}
 
 	private void loadContacts() {
+		List<Contact> newContacts = new ArrayList<>();
 		try {
 			FileInputStream fis = new FileInputStream("Contacts.dat");
 			ObjectInputStream ois = new ObjectInputStream(fis);
-			while(fis.available() > 0) {
-				contacts.add((Contact) ois.readObject());
+			while (fis.available() > 0) {
+				newContacts.add((Contact) ois.readObject());
 				ois.readUTF();
 			}
 			ois.close();
 		} catch (IOException | ClassNotFoundException ioe) {
 			ioe.printStackTrace();
 		}
+		contacts = newContacts;
 	}
 }
