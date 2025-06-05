@@ -48,41 +48,55 @@ public class NewContactView extends JFrame {
 	}
 
 	private void saveContact(Contact c) {
-		c.setNom(firstNameField.getText());
-		c.setPrenom(lastNameField.getText());
-		c.setVille(cityField.getText());
+	    c.setNom(firstNameField.getText());
+	    c.setPrenom(lastNameField.getText());
+	    c.setVille(cityField.getText());
 
-		if (contacts.contains(c)) {
-			JOptionPane.showMessageDialog(null, "The contact is already entered");
-		} else {
-			contacts.add(c);
+	    if (contacts.contains(c)) {
+	        JOptionPane.showMessageDialog(null, "The contact is already entered");
+	    } else {
+	        contacts.add(c);
 
-			try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat"))) {
-				for (Contact contact : contacts) {
-					oos.writeObject(contact); // save each contact
-				}
-				JOptionPane.showMessageDialog(null, "Contact saved successfully!");
-			} catch (IOException ioe) {
-				JOptionPane.showMessageDialog(this, "Error saving contact: " + ioe.getMessage(), "Error",
-						JOptionPane.ERROR_MESSAGE);
-			}
-		}
+	        try (FileOutputStream fos = new FileOutputStream("Contacts.dat", false);
+	             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+
+	            for (Contact contact : contacts) {
+	                oos.writeObject(contact); // save each contact
+	            }
+
+	            JOptionPane.showMessageDialog(null, "Contact saved successfully!");
+	        } catch (IOException ioe) {
+	            JOptionPane.showMessageDialog(this, "Error saving contact: " + ioe.getMessage(), "Error",
+	                    JOptionPane.ERROR_MESSAGE);
+	        }
+	    }
 	}
 
+
 	private void loadContacts() {
-		List<Contact> newContacts = new ArrayList<>();
-		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Contacts.dat"))) {
-			while (true) {
-				try {
-					Contact c = (Contact) ois.readObject();
-					newContacts.add(c);
-				} catch (EOFException eof) {
-					break; // Reached end of file
-				}
-			}
-		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		contacts = newContacts;
+	    List<Contact> newContacts = new ArrayList<>();
+	    File file = new File("Contacts.dat");
+
+	    if (!file.exists() || file.length() == 0) {
+	        contacts = newContacts; // Empty list if file doesn't exist or is empty
+	        return;
+	    }
+
+	    try (FileInputStream fis = new FileInputStream(file);
+	         ObjectInputStream ois = new ObjectInputStream(fis)) {
+
+	        while (true) {
+	            try {
+	                Contact c = (Contact) ois.readObject();
+	                newContacts.add(c);
+	            } catch (EOFException eof) {
+	                break; // End of file
+	            }
+	        }
+	    } catch (IOException | ClassNotFoundException e) {
+	        e.printStackTrace();
+	    }
+
+	    contacts = newContacts;
 	}
 }

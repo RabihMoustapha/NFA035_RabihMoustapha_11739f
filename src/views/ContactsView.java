@@ -62,27 +62,31 @@ public class ContactsView extends JFrame {
         updateContact.addActionListener(e -> {
             Contact selected = contactsList.getSelectedValue();
             if (selected != null) {
-                new NewContactView(selected);
+                new NewContactView(selected); // Assumes this view allows editing and saving the contact
             } else {
                 JOptionPane.showMessageDialog(this, "Please select a contact to update");
             }
         });
 
+
         sortByFirstName.addActionListener(e -> {
+            if (contacts == null || contacts.isEmpty()) return;
             List<Contact> sorted = new ArrayList<>(contacts);
-            sorted.sort(Comparator.comparing(Contact::getPrenom));
+            sorted.sort(Comparator.comparing(Contact::getPrenom, String.CASE_INSENSITIVE_ORDER));
             updateListModel(sorted);
         });
 
         sortByLastName.addActionListener(e -> {
+            if (contacts == null || contacts.isEmpty()) return;
             List<Contact> sorted = new ArrayList<>(contacts);
-            sorted.sort(Comparator.comparing(Contact::getNom));
+            sorted.sort(Comparator.comparing(Contact::getNom, String.CASE_INSENSITIVE_ORDER));
             updateListModel(sorted);
         });
 
         sortByCity.addActionListener(e -> {
+            if (contacts == null || contacts.isEmpty()) return;
             List<Contact> sorted = new ArrayList<>(contacts);
-            sorted.sort(Comparator.comparing(Contact::getVille));
+            sorted.sort(Comparator.comparing(Contact::getVille, String.CASE_INSENSITIVE_ORDER));
             updateListModel(sorted);
         });
 
@@ -94,51 +98,76 @@ public class ContactsView extends JFrame {
         contacts.clear();
 
         File file = new File("Contacts.dat");
-        if (!file.exists()) {
+        if (!file.exists() || file.length() == 0) {
             return; // No contacts to load
         }
 
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+        try (FileInputStream fis = new FileInputStream(file);
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+
             while (true) {
                 try {
                     Contact contact = (Contact) ois.readObject();
                     contacts.add(contact);
                     listModel.addElement(contact);
                 } catch (EOFException eof) {
-                    break; // reached end of file
+                    break; // Reached end of file
                 }
             }
+
         } catch (IOException | ClassNotFoundException ioe) {
-            JOptionPane.showMessageDialog(this, "Error loading contacts: " + ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                "Error loading contacts: " + ioe.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
         }
     }
 
+
     private void updateListModel(List<Contact> newContacts) {
         listModel.clear();
-        newContacts.forEach(listModel::addElement);
+        if (newContacts != null && !newContacts.isEmpty()) {
+            newContacts.forEach(listModel::addElement);
+        }
     }
+
 
     private void deleteSelectedContact() {
         Contact selected = contactsList.getSelectedValue();
         if (selected != null) {
-            int confirm = JOptionPane.showConfirmDialog(this, "Delete " + selected.getNom() + "?", "Confirm Delete",
-                    JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "Delete " + selected.getNom() + "?",
+                    "Confirm Delete",
+                    JOptionPane.YES_NO_OPTION
+            );
+
             if (confirm == JOptionPane.YES_OPTION) {
                 contacts.remove(selected);
                 updateListModel(contacts);
-                // Overwrite the file with updated contacts
-                try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Contacts.dat"))) {
+
+                // Safely overwrite the file with the updated list
+                File file = new File("Contacts.dat");
+                try (FileOutputStream fos = new FileOutputStream(file, false);
+                     ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+
                     for (Contact contact : contacts) {
                         oos.writeObject(contact);
                     }
+
                 } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(this, "Error deleting contact: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this,
+                            "Error deleting contact: " + ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
+
         } else {
             JOptionPane.showMessageDialog(this, "Please select a contact to delete");
         }
     }
+
 
     private void viewContact() {
         Contact selected = contactsList.getSelectedValue();

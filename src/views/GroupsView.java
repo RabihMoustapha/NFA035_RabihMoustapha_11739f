@@ -17,6 +17,7 @@ public class GroupsView extends JFrame {
 	private JButton addGroupButton = new JButton("Add New Group");
 	private JButton updateGroupButton = new JButton("Update Group");
 	private JButton deleteGroupButton = new JButton("Delete Group");
+	public JButton viewGroup = new JButton("View Group");
 
 	public GroupsView(Group g) {
 		this.g = g;
@@ -33,6 +34,7 @@ public class GroupsView extends JFrame {
 		bottomPanel.add(addGroupButton);
 		bottomPanel.add(updateGroupButton);
 		bottomPanel.add(deleteGroupButton);
+		bottomPanel.add(viewGroup);
 
 		setLayout(new BorderLayout());
 		add(leftPanel, BorderLayout.CENTER);
@@ -47,6 +49,7 @@ public class GroupsView extends JFrame {
 
 		updateGroupButton.addActionListener(e -> updateGroup(g));
 		deleteGroupButton.addActionListener(e -> deleteGroup(g));
+		viewGroup.addActionListener(e -> viewGroup());
 
 		setVisible(true);
 	}
@@ -110,4 +113,15 @@ public class GroupsView extends JFrame {
 			JOptionPane.showMessageDialog(this, "Save failed: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
+	
+    private void viewGroup() {
+        Group selected = groupList.getSelectedValue();
+        if (selected != null) {
+            JOptionPane.showMessageDialog(this,
+                    "Name: " + selected.getNom() + "\n" +
+                    "Description: " + selected.getDescription());
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select a contact to view");
+        }
+    }
 }
