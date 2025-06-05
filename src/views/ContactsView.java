@@ -7,6 +7,7 @@ import java.io.*;
 import java.util.*;
 import java.util.List;
 import Models.Contact;
+import Models.PhoneNumber;
 
 public class ContactsView extends JFrame {
 	public List<Contact> contacts;
@@ -15,6 +16,7 @@ public class ContactsView extends JFrame {
 	public JButton sortByFirstName = new JButton("Sort by First Name");
 	public JButton sortByLastName = new JButton("Sort by Last Name");
 	public JButton sortByCity = new JButton("Sort by City");
+	public JButton addPhoneNumber = new JButton("Add Phone Number");
 	public JButton addNewContact = new JButton("Add New Contact");
 	public JButton updateContact = new JButton("Update Contact");
 	public JButton deleteContact = new JButton("Delete Contact");
@@ -40,6 +42,7 @@ public class ContactsView extends JFrame {
 		topPanel.add(searchField);
 
 		JPanel buttonPanel = new JPanel(new FlowLayout());
+		buttonPanel.add(addPhoneNumber);
 		buttonPanel.add(addNewContact);
 		buttonPanel.add(updateContact);
 		buttonPanel.add(deleteContact);
@@ -53,6 +56,8 @@ public class ContactsView extends JFrame {
 		add(buttonPanel, BorderLayout.SOUTH);
 
 		loadContacts();
+
+		addPhoneNumber.addActionListener(e -> addPhoneNumberToContact());
 
 		addNewContact.addActionListener(e -> new NewContactView(new Contact()));
 
@@ -107,6 +112,44 @@ public class ContactsView extends JFrame {
 			}
 		});
 		setVisible(true);
+	}
+
+	private void addPhoneNumberToContact() {
+		Contact selected = contactsList.getSelectedValue();
+		if (selected == null) {
+			JOptionPane.showMessageDialog(this, "Please select a contact to add a phone number.");
+			return;
+		}
+
+		try {
+			String regionCodeStr = JOptionPane.showInputDialog(this, "Enter Region Code:");
+			if (regionCodeStr == null)
+				return;
+			int regionCode = Integer.parseInt(regionCodeStr.trim());
+
+			String numberStr = JOptionPane.showInputDialog(this, "Enter Phone Number:");
+			if (numberStr == null)
+				return;
+			int number = Integer.parseInt(numberStr.trim());
+
+			PhoneNumber phone = new PhoneNumber(regionCode, number);
+			selected.addPhoneNumber(phone);
+
+			// Save updated contact list to file
+			try (FileOutputStream fos = new FileOutputStream("Contacts.dat");
+					ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+				for (Contact contact : contacts) {
+					oos.writeObject(contact);
+				}
+			}
+
+			JOptionPane.showMessageDialog(this, "Phone number added successfully.");
+		} catch (NumberFormatException ex) {
+			JOptionPane.showMessageDialog(this, "Invalid number format.");
+		} catch (IOException ex) {
+			JOptionPane.showMessageDialog(this, "Failed to save contact: " + ex.getMessage(), "Error",
+					JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	private void searchContacts() {
@@ -195,7 +238,7 @@ public class ContactsView extends JFrame {
 		Contact selected = contactsList.getSelectedValue();
 		if (selected != null) {
 			JOptionPane.showMessageDialog(this, "First Name: " + selected.getPrenom() + "\n" + "Last Name: "
-					+ selected.getNom() + "\n" + "City: " + selected.getVille());
+					+ selected.getNom() + "\n" + "City: " + selected.getVille() + "\nPhonesNumber: " + selected.getNumbers());
 		} else {
 			JOptionPane.showMessageDialog(this, "Please select a contact to view");
 		}
