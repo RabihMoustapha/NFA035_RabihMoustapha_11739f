@@ -8,7 +8,7 @@ public class Group extends MyObservable implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private boolean changed = false;
 	public String nom, description;
-	public static List<Contact> contacts;
+	private List<Contact> contacts;
 
 	
 	public Group() {
@@ -58,7 +58,7 @@ public class Group extends MyObservable implements Serializable{
         this.description = description;
     }
 
-    public static int getNombreContacts() {
+    public int getNombreContacts() {
 			return contacts.size();
     }
 
