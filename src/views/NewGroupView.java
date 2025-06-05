@@ -11,11 +11,8 @@ import Models.Group;
 public class NewGroupView extends JFrame {
     private Group g;
     private List<Group> groups = new ArrayList<>();
-    private List<Contact> contacts = new ArrayList<>();
     private JTextField groupNameField = new JTextField(15);
     private JTextArea descriptionArea = new JTextArea(3, 20);
-    private DefaultListModel<Contact> contactListModel = new DefaultListModel<>();
-    private JList<Contact> contactList = new JList<>(contactListModel);
     private JButton saveButton = new JButton("Save Group");
 
     public NewGroupView(Group g) {
@@ -30,15 +27,11 @@ public class NewGroupView extends JFrame {
         panel.add(groupNameField);
         panel.add(new JLabel("Description:"));
         panel.add(new JScrollPane(descriptionArea));
-        panel.add(new JLabel("Add Contacts:"));
-        panel.add(new JScrollPane(contactList));
         panel.add(saveButton);
 
         add(panel);
 
-        loadContactsData();
         loadGroupsData();
-        displayData();
 
         saveButton.addActionListener(e -> addGroup(g));
 
@@ -69,35 +62,6 @@ public class NewGroupView extends JFrame {
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    private void displayData() {
-        contactListModel.clear();
-        contacts.forEach(contactListModel::addElement);
-    }
-
-    private void loadContactsData() {
-        List<Contact> newContacts = new ArrayList<>();
-        File file = new File("Contacts.dat");
-        if (!file.exists()) return;
-
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-            while (true) {
-                try {
-                    Contact c = (Contact) ois.readObject();
-                    newContacts.add(c);
-                } catch (EOFException eof) {
-                    break;
-                }
-            }
-        } catch (IOException | ClassNotFoundException ioe) {
-            ioe.printStackTrace();
-            JOptionPane.showMessageDialog(this,
-                    "Error loading contacts: " + ioe.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-        contacts = newContacts;
     }
 
     private void loadGroupsData() {

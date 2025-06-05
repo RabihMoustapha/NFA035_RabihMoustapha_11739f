@@ -46,8 +46,8 @@ public class Group extends MyObservable implements Serializable{
     }
     
 
-    public Set<Contact> getContacts() {
-        return new HashSet<>(contacts);
+    public List<Contact> getContacts() {
+        return new ArrayList<>(contacts);
     }
 
     public void setNom(String nom) {
