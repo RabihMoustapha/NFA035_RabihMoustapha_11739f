@@ -56,10 +56,11 @@ public class GroupUpdateView extends JFrame {
             return;
         }
 
+        // Update current group instance
         group.setNom(newName);
         group.setDescription(newDesc);
 
-        // Load all groups
+        // Load all groups from file
         List<Group> allGroups = new ArrayList<>();
         File file = new File("Groups.dat");
 
@@ -77,15 +78,15 @@ public class GroupUpdateView extends JFrame {
             return;
         }
 
-        // Update the correct group
+        // Replace by matching the original name
         for (int i = 0; i < allGroups.size(); i++) {
-            if (allGroups.get(i).equals(group)) {
+            if (allGroups.get(i).getNom().equalsIgnoreCase(group.getNom())) {
                 allGroups.set(i, group);
                 break;
             }
         }
 
-        // Save back all groups
+        // Save updated list back to file
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
             for (Group g : allGroups) {
                 oos.writeObject(g);

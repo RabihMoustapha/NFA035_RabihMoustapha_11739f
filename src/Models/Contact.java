@@ -67,6 +67,6 @@ public class Contact extends MyObservable implements Serializable{
 	}
 
 	public String toString() {
-		return this.nom + " " + this.prenom + ": " + this.ville;
+		return this.nom + " " + this.prenom;
 	}
 }

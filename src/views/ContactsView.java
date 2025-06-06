@@ -16,7 +16,6 @@ public class ContactsView extends JFrame {
 	public JButton sortByFirstName = new JButton("Sort by First Name");
 	public JButton sortByLastName = new JButton("Sort by Last Name");
 	public JButton sortByCity = new JButton("Sort by City");
-	public JButton addPhoneNumber = new JButton("Add Phone Number");
 	public JButton addNewContact = new JButton("Add New Contact");
 	public JButton updateContact = new JButton("Update Contact");
 	public JButton deleteContact = new JButton("Delete Contact");
@@ -42,7 +41,6 @@ public class ContactsView extends JFrame {
 		topPanel.add(searchField);
 
 		JPanel buttonPanel = new JPanel(new FlowLayout());
-		buttonPanel.add(addPhoneNumber);
 		buttonPanel.add(addNewContact);
 		buttonPanel.add(updateContact);
 		buttonPanel.add(deleteContact);
@@ -56,8 +54,6 @@ public class ContactsView extends JFrame {
 		add(buttonPanel, BorderLayout.SOUTH);
 
 		loadContacts();
-
-		addPhoneNumber.addActionListener(e -> addPhoneNumberToContact());
 
 		addNewContact.addActionListener(e -> new NewContactView(new Contact()));
 
@@ -115,41 +111,7 @@ public class ContactsView extends JFrame {
 	}
 
 	private void addPhoneNumberToContact() {
-		Contact selected = contactsList.getSelectedValue();
-		if (selected == null) {
-			JOptionPane.showMessageDialog(this, "Please select a contact to add a phone number.");
-			return;
-		}
 
-		try {
-			String regionCodeStr = JOptionPane.showInputDialog(this, "Enter Region Code:");
-			if (regionCodeStr == null)
-				return;
-			int regionCode = Integer.parseInt(regionCodeStr.trim());
-
-			String numberStr = JOptionPane.showInputDialog(this, "Enter Phone Number:");
-			if (numberStr == null)
-				return;
-			int number = Integer.parseInt(numberStr.trim());
-
-			PhoneNumber phone = new PhoneNumber(regionCode, number);
-			selected.addPhoneNumber(phone);
-
-			// Save updated contact list to file
-			try (FileOutputStream fos = new FileOutputStream("Contacts.dat");
-					ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-				for (Contact contact : contacts) {
-					oos.writeObject(contact);
-				}
-			}
-
-			JOptionPane.showMessageDialog(this, "Phone number added successfully.");
-		} catch (NumberFormatException ex) {
-			JOptionPane.showMessageDialog(this, "Invalid number format.");
-		} catch (IOException ex) {
-			JOptionPane.showMessageDialog(this, "Failed to save contact: " + ex.getMessage(), "Error",
-					JOptionPane.ERROR_MESSAGE);
-		}
 	}
 
 	private void searchContacts() {
@@ -237,10 +199,137 @@ public class ContactsView extends JFrame {
 	private void viewContact() {
 		Contact selected = contactsList.getSelectedValue();
 		if (selected != null) {
-			JOptionPane.showMessageDialog(this, "First Name: " + selected.getPrenom() + "\n" + "Last Name: "
-					+ selected.getNom() + "\n" + "City: " + selected.getVille() + "\nPhonesNumber: " + selected.getNumbers());
+			JDialog dialog = new JDialog(this, "Contact Details", true);
+			dialog.setSize(400, 300);
+			dialog.setLocationRelativeTo(this);
+			dialog.setLayout(new BorderLayout());
+
+			// Info at top
+			JTextArea infoArea = new JTextArea();
+			infoArea.setEditable(false);
+			infoArea.setText("First Name: " + selected.getPrenom() + "\n" + "Last Name: " + selected.getNom() + "\n"
+					+ "City: " + selected.getVille() + "\n\nPhone Numbers:\n");
+
+			List<PhoneNumber> phones = selected.getNumbers();
+			for (PhoneNumber phone : phones) {
+				infoArea.append(phone.toString() + "\n");
+			}
+
+			dialog.add(new JScrollPane(infoArea), BorderLayout.CENTER);
+
+			// Button panel
+			JPanel buttonPanel = new JPanel(new FlowLayout());
+			JButton addPhoneNumber = new JButton("Add Phone Number");
+			JButton updatePhoneBtn = new JButton("Update Phone");
+			JButton removePhoneBtn = new JButton("Remove Phone");
+
+			// -- Add Phone Action --
+			addPhoneNumber.addActionListener(e -> {
+				if (selected == null) {
+					JOptionPane.showMessageDialog(dialog, "No contact selected.");
+					return;
+				}
+				try {
+					String regionCodeStr = JOptionPane.showInputDialog(dialog, "Enter Region Code:");
+					if (regionCodeStr == null)
+						return;
+					int regionCode = Integer.parseInt(regionCodeStr.trim());
+
+					String numberStr = JOptionPane.showInputDialog(dialog, "Enter Phone Number:");
+					if (numberStr == null)
+						return;
+					int number = Integer.parseInt(numberStr.trim());
+
+					PhoneNumber newPhone = new PhoneNumber(regionCode, number);
+					selected.addPhoneNumber(newPhone);
+					saveContactsToFile();
+
+					JOptionPane.showMessageDialog(dialog, "Phone number added.");
+					dialog.dispose();
+					viewContact(); // Refresh
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(dialog, "Invalid number format.");
+				}
+			});
+
+			// -- Update Phone Action --
+			updatePhoneBtn.addActionListener(e -> {
+				if (phones.isEmpty()) {
+					JOptionPane.showMessageDialog(dialog, "No phone numbers to update.");
+					return;
+				}
+				PhoneNumber selectedPhone = (PhoneNumber) JOptionPane.showInputDialog(dialog,
+						"Select a phone to update:", "Update Phone", JOptionPane.PLAIN_MESSAGE, null, phones.toArray(),
+						phones.get(0));
+				if (selectedPhone != null) {
+					try {
+						String newRegion = JOptionPane.showInputDialog(dialog, "Enter new region code:",
+								selectedPhone.getRegionCode());
+						if (newRegion == null)
+							return;
+						int regionCode = Integer.parseInt(newRegion.trim());
+
+						String newNumber = JOptionPane.showInputDialog(dialog, "Enter new phone number:",
+								selectedPhone.getNumber());
+						if (newNumber == null)
+							return;
+						int number = Integer.parseInt(newNumber.trim());
+
+						selectedPhone.setRegionCode(regionCode);
+						selectedPhone.setNumber(number);
+						saveContactsToFile();
+						JOptionPane.showMessageDialog(dialog, "Phone updated.");
+						dialog.dispose();
+						viewContact(); // Refresh
+					} catch (NumberFormatException ex) {
+						JOptionPane.showMessageDialog(dialog, "Invalid number format.");
+					}
+				}
+			});
+
+			// -- Remove Phone Action --
+			removePhoneBtn.addActionListener(e -> {
+				if (phones.isEmpty()) {
+					JOptionPane.showMessageDialog(dialog, "No phone numbers to remove.");
+					return;
+				}
+				PhoneNumber selectedPhone = (PhoneNumber) JOptionPane.showInputDialog(dialog,
+						"Select a phone to remove:", "Remove Phone", JOptionPane.PLAIN_MESSAGE, null, phones.toArray(),
+						phones.get(0));
+				if (selectedPhone != null) {
+					int confirm = JOptionPane.showConfirmDialog(dialog,
+							"Are you sure you want to delete: " + selectedPhone + "?", "Confirm Remove",
+							JOptionPane.YES_NO_OPTION);
+					if (confirm == JOptionPane.YES_OPTION) {
+						selected.getNumbers().remove(selectedPhone);
+						saveContactsToFile();
+						JOptionPane.showMessageDialog(dialog, "Phone removed.");
+						dialog.dispose();
+						viewContact(); // Refresh
+					}
+				}
+			});
+
+			buttonPanel.add(addPhoneNumber);
+			buttonPanel.add(updatePhoneBtn);
+			buttonPanel.add(removePhoneBtn);
+
+			dialog.add(buttonPanel, BorderLayout.SOUTH);
+			dialog.setVisible(true);
 		} else {
 			JOptionPane.showMessageDialog(this, "Please select a contact to view");
+		}
+	}
+
+	private void saveContactsToFile() {
+		try (FileOutputStream fos = new FileOutputStream("Contacts.dat");
+				ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+			for (Contact contact : contacts) {
+				oos.writeObject(contact);
+			}
+		} catch (IOException ex) {
+			JOptionPane.showMessageDialog(this, "Error saving contacts: " + ex.getMessage(), "Error",
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }

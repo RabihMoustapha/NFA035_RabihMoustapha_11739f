@@ -8,7 +8,7 @@ public class Group extends MyObservable implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private boolean changed = false;
 	public String nom, description;
-	private List<Contact> contacts;
+	public List<Contact> contacts;
 
 	
 	public Group() {
@@ -22,12 +22,11 @@ public class Group extends MyObservable implements Serializable{
 	}
 	
 	public void ajouterContact(Contact contact) {
-		if(!contacts.contains(contact)) {
+		if(!contacts.contains(contact)) 
 			contacts.add(contact);
-            setChanged();
-            notifyObservers();
-            changed = false;
-		}
+        setChanged();
+        notifyObservers();
+        changed = false;
 	}
 	
 	public void deleteContact(Contact contact) {
@@ -59,11 +58,11 @@ public class Group extends MyObservable implements Serializable{
     }
 
     public int getNombreContacts() {
+    	if (contacts == null) return 0;
 			return contacts.size();
     }
 
     public String toString() {
-        return "Groupe [nom=" + nom + ", description=" + description 
-             + ", nombreContacts=" + getNombreContacts() + "]";
+    	return getNom() + " with " + getNombreContacts() + " contacts";
     }
 }
