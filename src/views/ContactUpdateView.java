@@ -13,7 +13,7 @@ public class ContactUpdateView extends JFrame {
     private JTextField firstNameField;
     private JTextField lastNameField;
     private JTextField cityField;
-    private JButton saveButton;
+    private JButton saveButton, cancelButton;
 
     private Contact originalContact;
 
@@ -30,6 +30,7 @@ public class ContactUpdateView extends JFrame {
         cityField = new JTextField(contact.getVille(), 20);
 
         saveButton = new JButton("Save Changes");
+        cancelButton = new JButton("Cancel");
 
         JPanel formPanel = new JPanel(new GridLayout(0, 1, 5, 5));
         formPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -40,11 +41,14 @@ public class ContactUpdateView extends JFrame {
         formPanel.add(new JLabel("City:"));
         formPanel.add(cityField);
         formPanel.add(saveButton);
+        formPanel.add(cancelButton);
 
         add(formPanel);
 
         saveButton.addActionListener(e -> updateContact());
 
+        cancelButton.addActionListener(e -> this.dispose());
+        
         setVisible(true);
     }
 

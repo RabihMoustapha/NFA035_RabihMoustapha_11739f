@@ -16,7 +16,8 @@ public class NewContactView extends JFrame {
 	private JTextField lastNameField = new JTextField(15);
 	private JTextField cityField = new JTextField(15);
 	private JButton saveButton = new JButton("Save");
-
+	private JButton cancelButton = new JButton("Cancel");
+	
 	public NewContactView(Contact c) {
 		this.c = c;
 		contacts = new ArrayList<>();
@@ -41,9 +42,13 @@ public class NewContactView extends JFrame {
 		// Button panel
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		buttonPanel.add(saveButton);
+		buttonPanel.add(cancelButton);
 		form.add(buttonPanel);
 
 		saveButton.addActionListener(e -> saveContact(c));
+		
+		cancelButton.addActionListener(e -> this.dispose());
+		
 		add(form);
 	}
 
@@ -54,6 +59,7 @@ public class NewContactView extends JFrame {
 
 	    if (contacts.contains(c)) {
 	        JOptionPane.showMessageDialog(null, "The contact is already entered");
+	        return;
 	    } else {
 	        contacts.add(c);
 

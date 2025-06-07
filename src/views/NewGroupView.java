@@ -14,6 +14,7 @@ public class NewGroupView extends JFrame {
     private JTextField groupNameField = new JTextField(15);
     private JTextArea descriptionArea = new JTextArea(3, 20);
     private JButton saveButton = new JButton("Save Group");
+    private JButton cancelButton = new JButton("Cancel");
 
     public NewGroupView(Group g) {
         this.g = g;
@@ -28,12 +29,15 @@ public class NewGroupView extends JFrame {
         panel.add(new JLabel("Description:"));
         panel.add(new JScrollPane(descriptionArea));
         panel.add(saveButton);
+        panel.add(cancelButton);
 
         add(panel);
 
         loadGroupsData();
 
         saveButton.addActionListener(e -> addGroup(g));
+        
+        cancelButton.addActionListener(e -> this.dispose());
 
         setVisible(true);
     }

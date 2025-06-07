@@ -6,6 +6,8 @@ import java.awt.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
+import java.util.function.*;
+
 import Models.Contact;
 import Models.PhoneNumber;
 
@@ -20,6 +22,9 @@ public class ContactsView extends JFrame {
 	public JButton updateContact = new JButton("Update Contact");
 	public JButton deleteContact = new JButton("Delete Contact");
 	public JButton viewContact = new JButton("View Contact");
+	JButton cancelButton = new JButton("Cancel");
+
+
 
 	public JTextField searchField = new JTextField(20);
 	public DefaultListModel<Contact> listModel = new DefaultListModel<>();
@@ -45,6 +50,7 @@ public class ContactsView extends JFrame {
 		buttonPanel.add(updateContact);
 		buttonPanel.add(deleteContact);
 		buttonPanel.add(viewContact);
+		buttonPanel.add(cancelButton);
 
 		JScrollPane scrollPane = new JScrollPane(contactsList);
 
@@ -60,6 +66,10 @@ public class ContactsView extends JFrame {
 		deleteContact.addActionListener(e -> deleteSelectedContact());
 
 		viewContact.addActionListener(e -> viewContact());
+		
+		cancelButton.addActionListener(e -> {
+			this.dispose();
+			});
 
 		updateContact.addActionListener(e -> {
 			Contact selected = contactsList.getSelectedValue();
@@ -69,30 +79,10 @@ public class ContactsView extends JFrame {
 				JOptionPane.showMessageDialog(this, "Please select a contact to update");
 			}
 		});
-
-		sortByFirstName.addActionListener(e -> {
-			if (contacts == null || contacts.isEmpty())
-				return;
-			List<Contact> sorted = new ArrayList<>(contacts);
-			sorted.sort(Comparator.comparing(Contact::getPrenom, String.CASE_INSENSITIVE_ORDER));
-			updateListModel(sorted);
-		});
-
-		sortByLastName.addActionListener(e -> {
-			if (contacts == null || contacts.isEmpty())
-				return;
-			List<Contact> sorted = new ArrayList<>(contacts);
-			sorted.sort(Comparator.comparing(Contact::getNom, String.CASE_INSENSITIVE_ORDER));
-			updateListModel(sorted);
-		});
-
-		sortByCity.addActionListener(e -> {
-			if (contacts == null || contacts.isEmpty())
-				return;
-			List<Contact> sorted = new ArrayList<>(contacts);
-			sorted.sort(Comparator.comparing(Contact::getVille, String.CASE_INSENSITIVE_ORDER));
-			updateListModel(sorted);
-		});
+		
+		sortByFirstName.addActionListener(e -> sortContactsBy(Contact::getPrenom));
+		sortByLastName.addActionListener(e -> sortContactsBy(Contact::getNom));
+		sortByCity.addActionListener(e -> sortContactsBy(Contact::getVille));
 
 		searchField.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
@@ -286,29 +276,55 @@ public class ContactsView extends JFrame {
 					}
 				}
 			});
-
-			// -- Remove Phone Action --
+			
+			// -- Remove Button Action --
 			removePhoneBtn.addActionListener(e -> {
-				if (phones.isEmpty()) {
-					JOptionPane.showMessageDialog(dialog, "No phone numbers to remove.");
-					return;
-				}
-				PhoneNumber selectedPhone = (PhoneNumber) JOptionPane.showInputDialog(dialog,
-						"Select a phone to remove:", "Remove Phone", JOptionPane.PLAIN_MESSAGE, null, phones.toArray(),
-						phones.get(0));
-				if (selectedPhone != null) {
-					int confirm = JOptionPane.showConfirmDialog(dialog,
-							"Are you sure you want to delete: " + selectedPhone + "?", "Confirm Remove",
-							JOptionPane.YES_NO_OPTION);
-					if (confirm == JOptionPane.YES_OPTION) {
-						selected.getNumbers().remove(selectedPhone);
-						saveContactsToFile();
-						JOptionPane.showMessageDialog(dialog, "Phone removed.");
-						dialog.dispose();
-						viewContact(); // Refresh
-					}
-				}
+			    if (phones.isEmpty()) {
+			        JOptionPane.showMessageDialog(dialog, "No phone numbers to remove.");
+			        return;
+			    }
+
+			    // Panel with checkboxes
+			    JPanel panel = new JPanel();
+			    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+			    List<JCheckBox> checkBoxes = new ArrayList<>();
+
+			    for (PhoneNumber phone : phones) {
+			        JCheckBox cb = new JCheckBox(phone.toString());
+			        checkBoxes.add(cb);
+			        panel.add(cb);
+			    }
+
+			    int result = JOptionPane.showConfirmDialog(dialog, panel, "Select phones to remove",
+			            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+			    if (result == JOptionPane.OK_OPTION) {
+			        List<PhoneNumber> toRemove = new ArrayList<>();
+			        for (int i = 0; i < checkBoxes.size(); i++) {
+			            if (checkBoxes.get(i).isSelected()) {
+			                toRemove.add(phones.get(i));
+			            }
+			        }
+
+			        if (toRemove.isEmpty()) {
+			            JOptionPane.showMessageDialog(dialog, "No phone numbers selected.");
+			            return;
+			        }
+
+			        int confirm = JOptionPane.showConfirmDialog(dialog,
+			                "Are you sure you want to delete the selected phone(s)?",
+			                "Confirm Remove", JOptionPane.YES_NO_OPTION);
+
+			        if (confirm == JOptionPane.YES_OPTION) {
+			            selected.getNumbers().removeAll(toRemove);
+			            saveContactsToFile();
+			            JOptionPane.showMessageDialog(dialog, "Phone number(s) removed.");
+			            dialog.dispose();
+			            viewContact(); // Refresh
+			        }
+			    }
 			});
+
 
 			buttonPanel.add(addPhoneNumber);
 			buttonPanel.add(updatePhoneBtn);
@@ -331,5 +347,12 @@ public class ContactsView extends JFrame {
 			JOptionPane.showMessageDialog(this, "Error saving contacts: " + ex.getMessage(), "Error",
 					JOptionPane.ERROR_MESSAGE);
 		}
+	}
+	
+	private void sortContactsBy(Function<Contact, String> keyExtractor) {
+	    if (contacts == null || contacts.isEmpty()) return;
+	    List<Contact> sorted = new ArrayList<>(contacts);
+	    sorted.sort(Comparator.comparing(keyExtractor, String.CASE_INSENSITIVE_ORDER));
+	    updateListModel(sorted);
 	}
 }

@@ -12,7 +12,7 @@ public class GroupUpdateView extends JFrame {
 
     private JTextField nameField;
     private JTextArea descriptionArea;
-    private JButton saveButton;
+    private JButton saveButton, cancelButton;
 
     private Group group;
 
@@ -22,7 +22,7 @@ public class GroupUpdateView extends JFrame {
         setTitle("Update Group");
         setSize(400, 300);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         nameField = new JTextField(group.getNom(), 20);
         descriptionArea = new JTextArea(group.getDescription(), 5, 20);
@@ -30,6 +30,7 @@ public class GroupUpdateView extends JFrame {
         descriptionArea.setWrapStyleWord(true);
 
         saveButton = new JButton("Save");
+        cancelButton = new JButton("Cancel");
 
         JPanel formPanel = new JPanel(new GridLayout(0, 1, 5, 5));
         formPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -39,10 +40,12 @@ public class GroupUpdateView extends JFrame {
         formPanel.add(new JLabel("Description:"));
         formPanel.add(new JScrollPane(descriptionArea));
         formPanel.add(saveButton);
+        formPanel.add(cancelButton);
 
         add(formPanel);
 
         saveButton.addActionListener(e -> saveUpdatedGroup());
+        cancelButton.addActionListener(e -> this.dispose());
 
         setVisible(true);
     }
