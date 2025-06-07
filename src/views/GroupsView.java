@@ -53,7 +53,7 @@ public class GroupsView extends JFrame {
 
 		updateListModel(groups);
 
-		addGroupButton.addActionListener(e -> new NewGroupView(new Group()));
+		addGroupButton.addActionListener(e -> new NewGroupView(new Group(), this));
 		
 		cancelButton.addActionListener(e -> this.dispose());
 
@@ -96,7 +96,7 @@ public class GroupsView extends JFrame {
 		updateListModel(filtered);
 	}
 
-	private void loadGroups() {
+	public void loadGroups() {
 		groups.clear();
 		File file = new File("Groups.dat");
 		if (!file.exists() || file.length() == 0) {
@@ -128,7 +128,7 @@ public class GroupsView extends JFrame {
 	private void updateSelectedGroup() {
 		Group selected = groupList.getSelectedValue();
 		if (selected != null) {
-			new GroupUpdateView(selected);
+			new GroupUpdateView(selected, this);
 		} else {
 			JOptionPane.showMessageDialog(this, "Please select a group to update");
 		}
@@ -278,27 +278,6 @@ public class GroupsView extends JFrame {
 			});
 
 			// Remove Contact
-//			removeContactBtn.addActionListener(e -> {
-//				if (contacts.isEmpty()) {
-//					JOptionPane.showMessageDialog(dialog, "No contacts to remove.");
-//					return;
-//				}
-//				Contact selectedContact = (Contact) JOptionPane.showInputDialog(dialog, "Select a contact to remove:",
-//						"Remove Contact", JOptionPane.PLAIN_MESSAGE, null, contacts.toArray(), contacts.get(0));
-//				if (selectedContact != null) {
-//					int confirm = JOptionPane.showConfirmDialog(dialog,
-//							"Are you sure you want to delete: " + selectedContact + "?", "Confirm Remove",
-//							JOptionPane.YES_NO_OPTION);
-//					if (confirm == JOptionPane.YES_OPTION) {
-//						selected.deleteContact(selectedContact);
-//						saveContactsToFile();
-//						JOptionPane.showMessageDialog(dialog, "Contact removed.");
-//						dialog.dispose();
-//						viewSelectedGroup(); // Refresh
-//					}
-//				}
-//			});
-			
 			removeContactBtn.addActionListener(e -> {
 			    if (contacts.isEmpty()) {
 			        JOptionPane.showMessageDialog(dialog, "No contacts to remove.");

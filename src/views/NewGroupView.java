@@ -10,14 +10,16 @@ import Models.Group;
 
 public class NewGroupView extends JFrame {
     private Group g;
+    private GroupsView parent;
     private List<Group> groups = new ArrayList<>();
     private JTextField groupNameField = new JTextField(15);
     private JTextArea descriptionArea = new JTextArea(3, 20);
     private JButton saveButton = new JButton("Save Group");
     private JButton cancelButton = new JButton("Cancel");
 
-    public NewGroupView(Group g) {
+    public NewGroupView(Group g, GroupsView parent) {
         this.g = g;
+        this.parent = parent;
         setTitle("New Group");
         setSize(400, 400);
         setLocationRelativeTo(null);
@@ -66,6 +68,8 @@ public class NewGroupView extends JFrame {
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
+        
+        parent.loadGroups();
     }
 
     private void loadGroupsData() {

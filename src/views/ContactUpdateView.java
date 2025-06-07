@@ -9,21 +9,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContactUpdateView extends JFrame {
-
+	private ContactsView parent;
     private JTextField firstNameField;
     private JTextField lastNameField;
     private JTextField cityField;
     private JButton saveButton, cancelButton;
-
     private Contact originalContact;
 
-    public ContactUpdateView(Contact contact) {
+    public ContactUpdateView(Contact contact, ContactsView parent) {
         this.originalContact = contact;
-
+        this.parent = parent;
         setTitle("Update Contact");
         setSize(350, 250);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         firstNameField = new JTextField(contact.getPrenom(), 20);
         lastNameField = new JTextField(contact.getNom(), 20);
@@ -98,6 +97,6 @@ public class ContactUpdateView extends JFrame {
         }
 
         JOptionPane.showMessageDialog(this, "Contact updated successfully.");
-        dispose();
+        parent.loadContacts();
     }
 }

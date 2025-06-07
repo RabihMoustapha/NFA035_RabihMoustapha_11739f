@@ -33,16 +33,16 @@ public class MainView extends JFrame {
 		contactsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Contact c = new Contact();
-				new ContactsView(c);
-				new NewContactView(c);
+				ContactsView parent = new ContactsView(c);
+				new NewContactView(c, parent);
 			};
 		});
 
 		groupsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Group g = new Group();
-				new GroupsView(g);
-				new NewGroupView(g);
+				GroupsView parent = new GroupsView(g);
+				new NewGroupView(g, parent);
 			}
 		});
 	}

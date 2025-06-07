@@ -61,7 +61,7 @@ public class ContactsView extends JFrame {
 
 		loadContacts();
 
-		addNewContact.addActionListener(e -> new NewContactView(new Contact()));
+		addNewContact.addActionListener(e -> new NewContactView(new Contact(), this));
 
 		deleteContact.addActionListener(e -> deleteSelectedContact());
 
@@ -74,7 +74,7 @@ public class ContactsView extends JFrame {
 		updateContact.addActionListener(e -> {
 			Contact selected = contactsList.getSelectedValue();
 			if (selected != null) {
-				new ContactUpdateView(selected);
+				new ContactUpdateView(selected, this);
 			} else {
 				JOptionPane.showMessageDialog(this, "Please select a contact to update");
 			}
@@ -122,7 +122,7 @@ public class ContactsView extends JFrame {
 		updateListModel(filtered);
 	}
 
-	private void loadContacts() {
+	public void loadContacts() {
 		listModel.clear();
 		contacts.clear();
 

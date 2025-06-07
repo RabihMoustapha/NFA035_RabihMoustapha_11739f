@@ -10,6 +10,7 @@ import java.io.*;
 import Models.Contact;
 
 public class NewContactView extends JFrame {
+	private ContactsView parent;
 	private Contact c;
 	private List<Contact> contacts;
 	private JTextField firstNameField = new JTextField(15);
@@ -18,7 +19,8 @@ public class NewContactView extends JFrame {
 	private JButton saveButton = new JButton("Save");
 	private JButton cancelButton = new JButton("Cancel");
 	
-	public NewContactView(Contact c) {
+	public NewContactView(Contact c, ContactsView parent) {
+		this.parent = parent;
 		this.c = c;
 		contacts = new ArrayList<>();
 		loadContacts(); // Load existing contacts from file
@@ -76,6 +78,8 @@ public class NewContactView extends JFrame {
 	                    JOptionPane.ERROR_MESSAGE);
 	        }
 	    }
+	    
+	    parent.loadContacts();
 	}
 
 

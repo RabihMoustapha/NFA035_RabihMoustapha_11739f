@@ -9,16 +9,16 @@ import java.util.*;
 import java.util.List;
 
 public class GroupUpdateView extends JFrame {
-
+	private GroupsView parent;
     private JTextField nameField;
     private JTextArea descriptionArea;
     private JButton saveButton, cancelButton;
 
     private Group group;
 
-    public GroupUpdateView(Group group) {
+    public GroupUpdateView(Group group, GroupsView parent) {
         this.group = group;
-
+        this.parent = parent;
         setTitle("Update Group");
         setSize(400, 300);
         setLocationRelativeTo(null);
@@ -100,6 +100,6 @@ public class GroupUpdateView extends JFrame {
         }
 
         JOptionPane.showMessageDialog(this, "Group updated successfully.");
-        dispose();
+        parent.loadGroups();
     }
 }
