@@ -1,12 +1,11 @@
 package views;
 
 import Models.Contact;
-
-import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.*;
 
 public class ContactUpdateView extends JFrame {
 	private ContactsView parent;

@@ -3,21 +3,38 @@ import Observers.MyObserver;
 import java.util.*;
 
 public abstract class MyObservable {
-	boolean changed;
-	List<MyObserver> observers;
-	
-	public MyObservable(){
+	private boolean changed;
+	private final List<MyObserver> observers;
+
+	public MyObservable() {
 		changed = false;
 		observers = new ArrayList<MyObserver>();
 	}
-	
-	public void setChanged() { changed = true; }
 
-	public void addObserver(MyObserver ob) { observers.add(ob); }
+	public void setChanged() {
+		changed = true;
+	}
+
+	public void addObserver(MyObserver ob) {
+		if (ob == null) return;
+		if (!observers.contains(ob)) observers.add(ob);
+	}
+
+	public void removeObserver(MyObserver ob) {
+		if (ob == null) return;
+		observers.remove(ob);
+	}
 
 	public void notifyObservers() {
-		for(Iterator<MyObserver> it = observers.iterator(); it.hasNext();) 
-		    ((MyObserver) it.next()).update();
-			changed = false;
+		if (!changed) return;
+		List<MyObserver> snapshot = new ArrayList<MyObserver>(observers);
+		for (MyObserver ob : snapshot) {
+			try {
+				ob.update();
+			} catch (Exception ex) {
+				// ignore observer exceptions to avoid breaking notification loop
+			}
+		}
+		changed = false;
 	}
 }

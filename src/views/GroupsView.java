@@ -81,7 +81,9 @@ public class GroupsView extends JFrame {
 	}
 
 	private void searchGroups() {
-		String query = searchField.getText().toLowerCase().trim();
+		String raw = searchField.getText();
+		if (raw == null) raw = "";
+		String query = normalize(raw).toLowerCase(Locale.ROOT).trim();
 		if (query.isEmpty()) {
 			updateListModel(groups);
 			return;
@@ -89,11 +91,19 @@ public class GroupsView extends JFrame {
 
 		List<Group> filtered = new ArrayList<>();
 		for (Group group : groups) {
-			if (group.getNom().toLowerCase().contains(query) || group.getDescription().toLowerCase().contains(query)) {
+			String nom = normalize(Optional.ofNullable(group.getNom()).orElse("")).toLowerCase(Locale.ROOT);
+			String desc = normalize(Optional.ofNullable(group.getDescription()).orElse("")).toLowerCase(Locale.ROOT);
+			if (nom.contains(query) || desc.contains(query)) {
 				filtered.add(group);
 			}
 		}
 		updateListModel(filtered);
+	}
+
+	private static String normalize(String s) {
+		if (s == null) return "";
+		String n = java.text.Normalizer.normalize(s, java.text.Normalizer.Form.NFD);
+		return n.replaceAll("\\p{M}", "");
 	}
 
 	public void loadGroups() {

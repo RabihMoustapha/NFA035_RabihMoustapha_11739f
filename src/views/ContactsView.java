@@ -33,7 +33,6 @@ public class ContactsView extends JFrame {
 	public ContactsView(Contact c) {
 		this.c = c;
 		contacts = new ArrayList<>();
-		loadContacts(); // Load existing contacts from file
 		setTitle("Contacts");
 		setSize(600, 400);
 		setLocationRelativeTo(null);
@@ -105,7 +104,9 @@ public class ContactsView extends JFrame {
 	}
 
 	private void searchContacts() {
-		String query = searchField.getText().toLowerCase().trim();
+		String raw = searchField.getText();
+		if (raw == null) raw = "";
+		String query = normalize(raw).toLowerCase(Locale.ROOT).trim();
 		if (query.isEmpty()) {
 			updateListModel(contacts);
 			return;
@@ -113,13 +114,21 @@ public class ContactsView extends JFrame {
 
 		List<Contact> filtered = new ArrayList<>();
 		for (Contact contact : contacts) {
-			if (contact.getNom().toLowerCase().contains(query) || contact.getPrenom().toLowerCase().contains(query)
-					|| contact.getVille().toLowerCase().contains(query)) {
+			String nom = normalize(Optional.ofNullable(contact.getNom()).orElse("")).toLowerCase(Locale.ROOT);
+			String prenom = normalize(Optional.ofNullable(contact.getPrenom()).orElse("")).toLowerCase(Locale.ROOT);
+			String ville = normalize(Optional.ofNullable(contact.getVille()).orElse("")).toLowerCase(Locale.ROOT);
+			if (nom.contains(query) || prenom.contains(query) || ville.contains(query)) {
 				filtered.add(contact);
 			}
 		}
 
 		updateListModel(filtered);
+	}
+
+	private static String normalize(String s) {
+		if (s == null) return "";
+		String n = java.text.Normalizer.normalize(s, java.text.Normalizer.Form.NFD);
+		return n.replaceAll("\\p{M}", "");
 	}
 
 	public void loadContacts() {
@@ -351,8 +360,7 @@ public class ContactsView extends JFrame {
 	
 	private void sortContactsBy(Function<Contact, String> keyExtractor) {
 	    if (contacts == null || contacts.isEmpty()) return;
-	    List<Contact> sorted = new ArrayList<>(contacts);
-	    sorted.sort(Comparator.comparing(keyExtractor, String.CASE_INSENSITIVE_ORDER));
-	    updateListModel(sorted);
+	    contacts.sort(Comparator.comparing(keyExtractor, String.CASE_INSENSITIVE_ORDER));
+	    updateListModel(contacts);
 	}
 }
